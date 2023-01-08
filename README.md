@@ -15,7 +15,10 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 3. Add your token in `main.py` at the last line
 4. Run `python main.py` and enjoy!
 
-## Notes:
+# Notes:
 
-Make sure to use the command in the channel you want to announce and when pinging a role do it like this - <@&roleid>
+
+## main.py notes
+
+Make sure to use the -announce command in the channel you want to announce and when pinging a role do it like this - <@&roleid>
 
