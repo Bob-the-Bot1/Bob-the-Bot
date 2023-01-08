@@ -3,7 +3,7 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 
 # contributors:
 <ul>
-<li><a href="">HarryDaDev</a></li>
+<li><a href="https://github.com/OpenSourceSimon">OpenSourceSimon</a></li>
 </ul>
 
 
