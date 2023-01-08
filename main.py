@@ -195,5 +195,13 @@ async def on_message(message):
         # Send the quote to the channel
         await message.channel.send(quote)
         print(quote)
+    
+    if message.content.startswith("-announce"):
+        print('')
+        print('announce command used')
+        # Get the message to echo from the command
+        echo = message.content[6:]
+        # Send the message to the channel
+        await message.channel.send(echo)
 
 client.run('ADD_YOUR_TOKEN')
