@@ -1,5 +1,8 @@
-# Bot the Bot
+# Bob the Bot
 A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryVx)
+
+# contributors:
+
 
 # How to run this?
 1. Clone the repo
