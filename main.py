@@ -164,13 +164,6 @@ async def on_message(message):
         # Send the result to the channel
         await message.channel.send(f"Result: {result}")
 
-    if message.content.startswith("-echo"):
-        print('')
-        print('echo command used')
-        # Get the message to echo from the command
-        echo = message.content[6:]
-        # Send the message to the channel
-        await message.channel.send(echo)
 
     if message.author not in users:
         users[message.author] = {"level": 1, "exp": 0}
@@ -195,7 +188,7 @@ async def on_message(message):
         # Send the quote to the channel
         await message.channel.send(quote)
         print(quote)
-    
+
     if message.content.startswith("-announce"):
         print('')
         print('announce command used')
