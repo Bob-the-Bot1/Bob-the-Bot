@@ -18,5 +18,6 @@ LEAD DEVElOPER
 
 # How to run this?
 1. Clone the repo
-2. Add your token in `main.py` at the last line
-3. Run `python main.py` and enjoy!
+2. Make sure you have all the packages installed
+3. Add your token in `main.py` at the last line
+4. Run `python main.py` and enjoy!
