@@ -9,7 +9,11 @@ LEAD DEVElOPERS
 <li><a href="https://github.com/ExplodeC0de">ExplodeC0de</a></li>
 </ul>
 
+
 DEVELOPERS
+<ul>
+<li><a href="">no user yet</a></li>
+</ul>
 
 # contributors:
 <ul>
