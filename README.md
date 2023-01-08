@@ -1,7 +1,10 @@
 # Bob the Bot
 A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryVx)
 
-# Lead developer
+# developers
+
+
+LEAD DEVElOPER
 <ul>
 <li><a href="">ExplodeC0de</a></li>
 </ul>
