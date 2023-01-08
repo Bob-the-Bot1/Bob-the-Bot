@@ -13,7 +13,7 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f'Successfully logged in as {client.user}!')
+    print(Fore.CYAN + f'Successfully logged in as {client.user}!')
     print('-------------------')
     print('This is for testing only')
 
@@ -39,6 +39,7 @@ async def on_message(message):
         await message.channel.send('-8ball')
         await message.channel.send('-roll')
         await message.channel.send('-search')
+        await message.channel.send('-math')
         print('')
         print(Fore.RED + '------------------------------------------')
         print(Fore.RED + 'help command output completed')
@@ -129,30 +130,35 @@ async def on_message(message):
                 print(result_str)
 
     if message.content.startswith("-math"):
-        print('')
-        print(Fore.RED + 'math command ')
+        print(Fore.BLUE + 'math command used')
         # Split the message into a list of words
         words = message.content.split()
         # Make sure we have enough arguments
-        if len(words) != 3:
-            await message.channel.send("Invalid number of arguments. Use math [operation] [number]")
+        if len(words) != 4:
+            await message.channel.send("Invalid number of arguments. Use -math [number] [operation] [number]")
             return
-        # Get the operation and number from the message
-        operation = words[1]
-        number = float(words[2])
+        # Get the first number and operation from the message
+        number1 = float(words[1])
+        operation = words[2]
+        # Get the second number from the message
+        number2 = float(words[3])
         # Perform the requested operation
-        if operation == "sqrt":
-            result = math.sqrt(number)
-        elif operation == "sin":
-            result = math.sin(number)
-        elif operation == "cos":
-            result = math.cos(number)
-        elif operation == "tan":
-            result = math.tan(number)
+        if operation == "+":
+            result = number1 + number2
+        elif operation == "-":
+            result = number1 - number2
+        elif operation == "*":
+            result = number1 * number2
+        elif operation == "/":
+            if number2 == 0:
+                await message.channel.send("Error: Cannot divide by zero.")
+                return
+            result = number1 / number2
+
         else:
-            await message.channel.send("Invalid operation. Use sqrt, sin, cos, or tan.")
+            await message.channel.send("Invalid operation. Use +, -, *, or /.")
             return
         # Send the result to the channel
         await message.channel.send(f"Result: {result}")
 
-client.run('add_token')
+client.run('ADD_YOUR_tOKEN')
