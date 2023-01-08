@@ -1,6 +1,12 @@
 # Bob the Bot
 A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryVx)
 
+# Lead developer
+<ul>
+<li><a href="">ExplodeC0de</a></li>
+</ul>
+
+
 # contributors:
 <ul>
 <li><a href="https://github.com/OpenSourceSimon">OpenSourceSimon</a></li>
