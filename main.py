@@ -5,12 +5,21 @@ import requests
 import bs4
 import math
 
+#colors of text in terminal: yellow=quote.
+
+quotes = [
+    "The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle. As with all matters of the heart, you'll know when you find it. - Steve Jobs",
+    "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart. - Helen Keller",
+    "We may encounter many defeats but we must not be defeated. - Maya Angelou",
+    "Success is not final, failure is not fatal: It is the courage to continue that counts. - Winston Churchill",
+    "Hardships often prepare ordinary people for an extraordinary destiny. - C.S. Lewis"
+]
 
 
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
-
+users = {}
 @client.event
 async def on_ready():
     print(Fore.CYAN + f'Successfully logged in as {client.user}!')
@@ -32,18 +41,11 @@ async def on_message(message):
         print('')
         print(Fore.GREEN + '--------------------------------------')
         print(Fore.GREEN + "help command used")
-        await message.channel.send('a list of commands:')
-        await message.channel.send('-help')
-        await message.channel.send('-info')
-        await message.channel.send('-hello')
-        await message.channel.send('-8ball')
-        await message.channel.send('-roll')
-        await message.channel.send('-search')
-        await message.channel.send('-math')
+        await message.channel.send("List of Commands\n-help > Provides this message.\n-info > Provides a list of information.\n-hello > Replies with hello!\n-8ball > Plays a game of 8ball.\n-roll > Randomly rolls a number between 1 and 6.\n-search > [idk what command does].\n-math > Solves your math equation.")
+
         print('')
         print(Fore.RED + '------------------------------------------')
         print(Fore.RED + 'help command output completed')
-
     if message.content.startswith('-roll'):
         print('')
         print(Fore.GREEN + '-----------------------------------')
@@ -68,7 +70,8 @@ async def on_message(message):
 
     if message.content.startswith('-8ball'):
         # Get the question from the message
-        print(Fore.YELLOW + '8ball command used')
+        print('')
+        print(Fore.LIGHTBLUE_EX + '8ball command used')
         question = message.content[7:]
 
         # Check if the question is empty
@@ -168,5 +171,29 @@ async def on_message(message):
         echo = message.content[6:]
         # Send the message to the channel
         await message.channel.send(echo)
+
+    if message.author not in users:
+        users[message.author] = {"level": 1, "exp": 0}
+    users[message.author]["exp"] += random.randint(5, 15)
+
+    # Chec
+    user = users[message.author]
+    if user["exp"] >= 100:
+        user["level"] += 1
+        user["exp"] = 0
+        await message.channel.send(f"{message.author.mention} has leveled up to level {user['level']}!")
+
+    if message.content == "-level":
+        print('')
+        print(Fore.MAGENTA + 'level command used')
+        await message.channel.send(f"{message.author.mention} is level {user['level']} with {user['exp']} experience points. Well done :)")
+    if message.content == "-quote":
+        print('')
+        print('quote command used')
+        # Select a random quote from the list
+        quote = random.choice(quotes)
+        # Send the quote to the channel
+        await message.channel.send(quote)
+        print(quote)
 
 client.run('ADD_YOUR_TOKEN')
