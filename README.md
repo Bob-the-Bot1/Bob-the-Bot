@@ -2,6 +2,9 @@
 A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryVx)
 
 # contributors:
+<ul>
+<li><a href="">HarryDaDev</a></li>
+</ul>
 
 
 # How to run this?
