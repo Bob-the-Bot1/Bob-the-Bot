@@ -161,4 +161,12 @@ async def on_message(message):
         # Send the result to the channel
         await message.channel.send(f"Result: {result}")
 
+    if message.content.startswith("-echo"):
+        print('')
+        print('echo command used')
+        # Get the message to echo from the command
+        echo = message.content[6:]
+        # Send the message to the channel
+        await message.channel.send(echo)
+
 client.run('ADD_YOUR_tOKEN')
