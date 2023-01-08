@@ -4,11 +4,12 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 # developers
 
 
-LEAD DEVElOPER
+LEAD DEVElOPERS
 <ul>
-<li><a href="">ExplodeC0de</a></li>
+<li><a href="https://github.com/ExplodeC0de">ExplodeC0de</a></li>
 </ul>
 
+DEVELOPERS
 
 # contributors:
 <ul>
