@@ -169,4 +169,4 @@ async def on_message(message):
         # Send the message to the channel
         await message.channel.send(echo)
 
-client.run('ADD_YOUR_tOKEN')
+client.run('ADD_YOUR_TOKEN')
