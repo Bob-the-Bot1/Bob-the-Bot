@@ -6,6 +6,7 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 - [ExplodeC0de](https://github.com/ExplodeC0de) - Lead developer
 - [OpenSourceSimon](https://github.com/OpenSourceSimon) - Contributor
 - [MesVisDraugai](https://github.com/MesVisiDraugai) - Contributer
+- [lukemccrea](https://github.com/lukemccrea) - Contributor
 
 # How to run this?
 1. Clone the repo
