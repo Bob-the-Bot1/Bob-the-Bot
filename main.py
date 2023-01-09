@@ -398,4 +398,4 @@ async def birthday_msg(msg):
                                        '`+bbset mm/dd {@another_person}` - to set your birthday\n'
                                        '`+setbbchannel` - to set channel as birthday announcements channel\n'
                                        '`+whenbd {@another_person}` - to view your registered birth date\n')
-client.run('ADD_YOUR_TOKEN')
+client.run('ADD_YOUR_TOKEN_HERE')
