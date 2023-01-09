@@ -16,6 +16,9 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 3. Add your token in `main.py` at the last line
 4. Run `python main.py` and enjoy!
 
+this file is still in development but To run mainv2.py 
+1. Add token and then run `mainv2.py`
+
 # Notes:
 
 
