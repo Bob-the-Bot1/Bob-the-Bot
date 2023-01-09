@@ -77,7 +77,7 @@ async def command(interaction):
                           description="I am a bot made and programmed by @ExplodeCode and I will only work when ExplodeCode turns me on",
                           color=0x00ff33)
     embed.set_author(name="Bob the Bot")
-    embed.add_field(name="Develpers", value="ExplodeCode \n OpenSourceSimon \n Tim", inline=False)
+    embed.add_field(name="Develpers", value="ExplodeCode \n OpenSourceSimon \n Tim \n Cattopy The Web", inline=False)
     await interaction.response.send_message(embed=embed)
 
 
