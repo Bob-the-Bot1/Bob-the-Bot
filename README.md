@@ -7,6 +7,7 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 - [lukemccrea](https://github.com/lukemccrea) - Developer
 - [OpenSourceSimon](https://github.com/OpenSourceSimon) - Contributor
 - [MesVisDraugai](https://github.com/MesVisiDraugai) - Contributer
+- [zehayk](https://github.com/zehayk) - Auther for the Birthday functions code
 
 
 # How to run this?
