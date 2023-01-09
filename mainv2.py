@@ -94,7 +94,7 @@ async def command(interaction, query: app_commands.Range[str, 1]):
     links = soup.select('.r a')
 
     # Send the results to the channel
-    embed = discord.Embed(title="Search", description=f"Search results for '{query}'", color=0x00ff33)
+    embed = discord.Embed(title="Search", description=f"Search results for '{query}'", text=links, color=0x00ff33)
 
     await interaction.response.send_message(embed=embed)
 
@@ -142,4 +142,4 @@ async def on_ready():
     print('This is for testing only')
 
 
-client.run('ADD_YOUR_TOKEN')
+client.run('MTA2MjE0MzQzNTYyMjA3NjQ0Nw.GnwFy6.LjIao7iF6uQp2KfkRMIQtiWdshCrg3o-djoNLg')
