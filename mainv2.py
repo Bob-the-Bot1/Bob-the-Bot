@@ -6,7 +6,6 @@ import requests
 import bs4
 import math
 
-
 guildId = 12345  # Replace with Guild Id
 
 intents = discord.Intents.default()
@@ -16,13 +15,6 @@ client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 # colors of text in terminal: yellow=quote.
 
-quotes = [
-    "The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle. As with all matters of the heart, you'll know when you find it. - Steve Jobs",
-    "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart. - Helen Keller",
-    "We may encounter many defeats but we must not be defeated. - Maya Angelou",
-    "Success is not final, failure is not fatal: It is the courage to continue that counts. - Winston Churchill",
-    "Hardships often prepare ordinary people for an extraordinary destiny. - C.S. Lewis"
-]
 
 users = {}
 
@@ -48,14 +40,14 @@ async def on_message(message):
         print(Fore.MAGENTA + 'level command used')
         await message.channel.send(
             f"{message.author.mention} is level {user['level']} with {user['exp']} experience points. Well done :)")
-    if message.content == "-quote":
-        print('')
-        print('quote command used')
-        # Select a random quote from the list
-        quote = random.choice(quotes)
-        # Send the quote to the channel
-        await message.channel.send(quote)
-        print(quote)
+
+
+@tree.command(name="quote", description="Get a random quote", guild=discord.Object(id=guildId))
+async def quote(interaction):
+    data = requests.get("https://api.quoteable.io/random").json()
+    quote = data["content"]
+    author = data["author"]
+    await interaction.response.send_message(f"{quote} - {author}")
 
 
 # Ping Command
@@ -104,7 +96,6 @@ async def command(interaction, query: app_commands.Range[str, 1]):
     # Send the results to the channel
     embed = discord.Embed(title="Search", description=f"Search results for '{query}'", color=0x00ff33)
 
-
     await interaction.response.send_message(embed=embed)
 
 
@@ -149,5 +140,6 @@ async def on_ready():
     print(Fore.CYAN + f'Successfully logged in as {client.user}!')
     print('-------------------')
     print('This is for testing only')
+
 
 client.run('ADD_YOUR_TOKEN')
