@@ -82,23 +82,6 @@ async def command(interaction):
     await interaction.response.send_message(calendar.month(yy, mm))
 
 
-# Search Command
-@tree.command(name="search", description="Search the internet.", guild=discord.Object(id=guildId))
-async def command(interaction, query: app_commands.Range[str, 1]):
-    # Perform the search
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    res = requests.get(f"https://google.com/search?q={query}", headers=headers)
-    res.raise_for_status()
-    # Parse the search results
-    soup = bs4.BeautifulSoup(res.text, 'html.parser')
-    links = soup.select('.r a')
-
-    # Send the results to the channel
-    embed = discord.Embed(title="Search", description=f"Search results for '{query}'", color=0x00ff33)
-
-    await interaction.response.send_message(embed=embed)
-
-
 # Math command
 @tree.command(name="math", description="Solve a math problem", guild=discord.Object(id=guildId))
 async def command(interaction, problem: app_commands.Range[str, 1]):
@@ -142,4 +125,4 @@ async def on_ready():
     print('This is for testing only')
 
 
-client.run('ADD_YOUR_TOKEN')
+client.run('ADD_YOU_BOT_TOKEN_HERE')

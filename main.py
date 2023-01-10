@@ -54,7 +54,7 @@ async def on_message(message):
         print('')
         print(Fore.GREEN + '--------------------------------------')
         print(Fore.GREEN + "help command used")
-        await message.channel.send("List of Commands\n-help > Provides this message.\n-info > Provides a list of information.\n-hello > Replies with hello!\n-8ball > Plays a game of 8ball.\n-roll > Randomly rolls a number between 1 and 6.\n-search > [idk what command does].\n-math > Solves your math equation.")
+        await message.channel.send("List of Commands\n-help > Provides this message.\n-info > Provides a list of information.\n-hello > Replies with hello!\n-8ball > Plays a game of 8ball.\n-roll > Randomly rolls a number between 1 and 6.\n-math > Solves your math equation.")
 
         print('')
         print(Fore.RED + '------------------------------------------')
@@ -119,32 +119,6 @@ async def on_message(message):
 
         # Send the response
         await message.channel.send(f"Question: {question}\nAnswer: {response}")
-
-    elif message.content.startswith('-search'):
-        print(Fore.BLUE + 'search command used')
-        # Get the search query
-        query = message.content[8:]
-
-        # Check if the query is empty
-        if len(query) == 0:
-            await message.channel.send("You didn't enter a search query!")
-            return
-        else:
-            print(Fore.BLUE + 'performing search')
-            # Perform the search
-            headers = {'User-Agent': 'Mozilla/5.0'}
-            res = requests.get(
-                f"https://google.com/search?q={query}", headers=headers)
-            res.raise_for_status()
-            # Parse the search results
-            soup = bs4.BeautifulSoup(res.text, 'html.parser')
-            links = soup.select('.r a')
-            # Send the results to the channel
-            result_str = f"Search results for '{query}':\n"
-            for i, link in enumerate(links):
-                result_str += f"{i + 1}. {link.text}\n{link.get('href')}\n"
-                await message.channel.send(result_str)
-                print(result_str)
 
     elif message.content.startswith("-math"):
         print(Fore.BLUE + 'math command used')
