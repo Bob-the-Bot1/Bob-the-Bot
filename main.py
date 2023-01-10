@@ -54,7 +54,7 @@ async def on_message(message):
         print('')
         print(Fore.GREEN + '--------------------------------------')
         print(Fore.GREEN + "help command used")
-        await message.channel.send("List of Commands\n-help > Provides this message.\n-info > Provides a list of information.\n-hello > Replies with hello!\n-8ball > Plays a game of 8ball.\n-roll > Randomly rolls a number between 1 and 6.\n-search > [idk what command does].\n-math > Solves your math equation.")
+        await message.channel.send("List of Commands\n-help > Provides this message.\n-info > Provides a list of information.\n-hello > Replies with hello!\n-8ball > Plays a game of 8ball.\n-roll > Randomly rolls a number between 1 and 6.\n-math > Solves your math equation.")
 
         print('')
         print(Fore.RED + '------------------------------------------')
