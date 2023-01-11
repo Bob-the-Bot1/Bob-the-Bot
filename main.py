@@ -395,9 +395,9 @@ async def birthday_msg(msg):
             json.dump(data, file)
             await msg.channel.send(f"`Success!`\nBirthday was set on **{month}/{day}** for <@{msgsender}>.")
 
-            if msg.content.startswith('+help'):
+            if msg.content.startswith('-help'):
                 await msg.channel.send('`( {} = optional )`\n'
-                                       '`+bbset mm/dd {@another_person}` - to set your birthday\n'
-                                       '`+setbbchannel` - to set channel as birthday announcements channel\n'
-                                       '`+whenbd {@another_person}` - to view your registered birth date\n')
+                                       '`-bbset mm/dd {@another_person}` - to set your birthday\n'
+                                       '`-setbbchannel` - to set channel as birthday announcements channel\n'
+                                       '`-whenbd {@another_person}` - to view your registered birth date\n')
 client.run('ADD_YOUR_TOKEN_HERE')
