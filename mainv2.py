@@ -107,6 +107,44 @@ async def command(interaction, query: app_commands.Range[str, 1]):
 
     await interaction.response.send_message(embed=embed)
 
+@tree.command(name="8ball", description="Ask the magic 8-ball a question.", guild=discord.Object(id=guildId))
+async def command(interaction, query:str):
+    # Get the question from the message
+    question = query
+
+    # Check if the question is empty
+    if len(question) == 0:
+        await interaction.response.send_message("You didn't ask a question!")
+        return
+
+    # Select a random response
+    responses = [
+        "It is certain.",
+        "It is decidedly so.",
+        "Without a doubt.",
+        "Yes - definitely.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Outlook good.",
+        "Yes.",
+        "Signs point to yes.",
+        "Reply hazy, try again.",
+        "Ask again later.",
+        "Better not tell you now.",
+        "Cannot predict now.",
+        "Concentrate and ask again.",
+        "Don't count on it.",
+        "My reply is no.",
+        "My sources say no.",
+        "Outlook not so good.",
+        "Very doubtful."
+    ]
+    response = random.choice(responses)
+
+    # Send the response
+    await interaction.response.send_message(f"Question: {question}\nAnswer: {response}")
+
 
 # Math command
 @tree.command(name="math", description="Solve a math problem", guild=discord.Object(id=guildId))
