@@ -1,5 +1,6 @@
 import discord
 from discord import app_commands
+from discord import Role
 from colorama import init, Fore, Back, Style
 import random
 import requests
@@ -7,7 +8,8 @@ import bs4
 import json
 import math
 
-guildId = 12345  # Replace with Guild Id
+
+guildId = 123456  # Replace with Guild Id
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -45,7 +47,30 @@ async def on_message(message):
 # Ping Command
 @tree.command(name="ping", description="Check the bot's ping.", guild=discord.Object(id=guildId))
 async def command(interaction):
-    await interaction.response.send_message("Pong")
+    await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
+
+# Leaderboard Command
+@tree.command(name="leaderboard", description="View the leaderboard.", guild=discord.Object(id=guildId))
+async def command(interaction):
+    sorted_users = sorted(users.items(), key=lambda x: x[1]["level"], reverse=True)
+    # Create an embed with the quote and its author
+    embed = discord.Embed(title="Leaderboard", description="", color=0x00ff33)
+    embed.set_author(name="Leaderboard")
+
+    for i, user in enumerate(sorted_users):
+        embed.add_field(name=f"#{i+1} {user[0].name}", value=f"Level: {user[1]['level']}\nExperience: {user[1]['exp']}", inline=False)
+
+    await interaction.response.send_message(embed=embed)
+
+@tree.command(name="giverole", description="give users a role", guild=discord.Object(id=guildId))
+async def command(interaction, role: Role, member: discord.Member):
+    await member.add_roles(role)
+    await interaction.response.send_message(f"{member.mention} now has the {role.name} role!")
+
+@tree.command(name="announce", description="Make an announcement.", guild=discord.Object(id=guildId))
+async def command(interaction, *, message: str):
+    guild = client.get_guild(guildId)
+    await interaction.response.send_message(message)
 
 
 @tree.command(name="quote", description="Get a random quote.", guild=discord.Object(id=guildId))
@@ -75,7 +100,7 @@ async def command(interaction):
 @tree.command(name="info", description="Get info about the bot", guild=discord.Object(id=guildId))
 async def command(interaction):
     embed = discord.Embed(title="Info",
-                          description="I am a bot made and programmed by @ExplodeCode and I will only work when ExplodeCode turns me on",
+                          description="I am a Top G bot made in python, I am an open source project and anyone can contribute!",
                           color=0x00ff33)
     embed.set_author(name="Bob the Bot")
     embed.add_field(name="Develpers", value="ExplodeCode \n OpenSourceSimon \n Tim \n Cattopy The Web", inline=False)
@@ -106,6 +131,11 @@ async def command(interaction, query: app_commands.Range[str, 1]):
     embed = discord.Embed(title="Search", description=f"Search results for '{query}'", color=0x00ff33)
 
     await interaction.response.send_message(embed=embed)
+
+
+
+#8ball command
+
 
 @tree.command(name="8ball", description="Ask the magic 8-ball a question.", guild=discord.Object(id=guildId))
 async def command(interaction, query:str):
@@ -144,7 +174,6 @@ async def command(interaction, query:str):
 
     # Send the response
     await interaction.response.send_message(f"Question: {question}\nAnswer: {response}")
-
 
 # Math command
 @tree.command(name="math", description="Solve a math problem", guild=discord.Object(id=guildId))
@@ -186,6 +215,6 @@ async def on_ready():
     await tree.sync(guild=discord.Object(id=guildId))
     print(Fore.CYAN + f'Successfully logged in as {client.user}!')
     print('-------------------')
-    print('This is for testing only')
+    print('Commands now online')
 
 client.run('ADD_YOU_BOT_TOKEN_HERE')
