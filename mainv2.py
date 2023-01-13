@@ -4,6 +4,7 @@ from colorama import init, Fore, Back, Style
 import random
 import requests
 import bs4
+import json
 import math
 
 guildId = 12345  # Replace with Guild Id
@@ -41,22 +42,30 @@ async def on_message(message):
         await message.channel.send(
             f"{message.author.mention} is level {user['level']} with {user['exp']} experience points. Well done :)")
 
-
-@tree.command(name="quote", description="Get a random quote", guild=discord.Object(id=guildId))
-async def quote(interaction):
-    data = requests.get("https://api.quoteable.io/random").json()
-    quote = data["content"]
-    author = data["author"]
-    await interaction.response.send_message(f"{quote} - {author}")
-
-
 # Ping Command
 @tree.command(name="ping", description="Check the bot's ping.", guild=discord.Object(id=guildId))
 async def command(interaction):
     await interaction.response.send_message("Pong")
 
 
+@tree.command(name="quote", description="Get a random quote.", guild=discord.Object(id=guildId))
+async def command(interaction):
+    # Fetch a random quote from a website
+    res = requests.get("https://www.goodreads.com/quotes")
+    soup = bs4.BeautifulSoup(res.text, 'html.parser')
+    quote_tags = soup.select('.quoteText')
+    author_tags = soup.select('.authorOrTitle')
+    quote = quote_tags[random.randint(0, len(quote_tags) - 1)].getText().strip()
+    author = author_tags[random.randint(0, len(author_tags) - 1)].getText().strip()
+
+    # Create an embed with the quote and its author
+    embed = discord.Embed(title="Quote of the day", description=quote, color=0x00ff33)
+    embed.set_author(name='quote')
+    await interaction.response.send_message(embed=embed)
+
+
 # Hello command
+
 @tree.command(name="hello", description="Say hi!", guild=discord.Object(id=guildId))
 async def command(interaction):
     await interaction.response.send_message("Howdy!")
@@ -80,6 +89,23 @@ async def command(interaction):
     yy = 2023
     mm = 1
     await interaction.response.send_message(calendar.month(yy, mm))
+
+
+# Search Command
+@tree.command(name="search", description="Search the internet.", guild=discord.Object(id=guildId))
+async def command(interaction, query: app_commands.Range[str, 1]):
+    # Perform the search
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    res = requests.get(f"https://google.com/search?q={query}", headers=headers)
+    res.raise_for_status()
+    # Parse the search results
+    soup = bs4.BeautifulSoup(res.text, 'html.parser')
+    links = soup.select('.r a')
+
+    # Send the results to the channel
+    embed = discord.Embed(title="Search", description=f"Search results for '{query}'", color=0x00ff33)
+
+    await interaction.response.send_message(embed=embed)
 
 
 # Math command
@@ -123,6 +149,5 @@ async def on_ready():
     print(Fore.CYAN + f'Successfully logged in as {client.user}!')
     print('-------------------')
     print('This is for testing only')
-
 
 client.run('ADD_YOU_BOT_TOKEN_HERE')
