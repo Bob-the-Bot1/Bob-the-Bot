@@ -73,6 +73,13 @@ async def leaderboard(interaction):
 async def command(interaction):
     await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
 
+@tree.command(name="bored", description="Generates a random activity to do when feeling bored.")
+async def bored(interaction):
+    activities = ["play a game", "watch a movie", "read a book", "Learn a new coding language", "listen to music", "go for a walk", "call a friend", "write a letter", "paint a picture", "cook a new recipe", "learn a new skill"]
+    activity = random.choice(activities)
+    await interaction.response.send_message(f"Why not try to: {activity}")
+
+    
 @tree.command(name="giverole", description="give users a role", guild=discord.Object(id=guildId))
 async def giverole(interaction, member: discord.Member, role: discord.Role):
     required_role = discord.utils.get(member.guild.roles, name="management")
