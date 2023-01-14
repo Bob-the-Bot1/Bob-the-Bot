@@ -9,7 +9,7 @@ import json
 import math
 
 
-guildId = 123456  # Replace with Guild Id
+guildId = 123456 # Replace with Guild Id
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -18,49 +18,49 @@ client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 # colors of text in terminal: yellow=quote.
 
+import json
 
-users = {}
+# Create an empty dictionary to store user data
+user_data = {}
 
+# Function to get a user's data from the JSON file
+def get_user_data(user_id):
+    if user_id not in user_data:
+        # If the user doesn't exist in the dictionary, try to read their data from the JSON file
+        try:
+            with open(f'{user_id}.json', 'r') as file:
+                user_data[user_id] = json.load(file)
+        except FileNotFoundError:
+            # If the JSON file doesn't exist, create a new entry for the user with level 1 and 0 experience points
+            user_data[user_id] = {'level': 1, 'xp': 0}
+    return user_data[user_id]
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+# Function to save a user's data to the JSON file
+def save_user_data(user_id, data):
+    user_data[user_id] = data
+    with open(f'{user_id}.json', 'w') as file:
+        json.dump(data, file)
 
-    if message.author not in users:
-        users[message.author] = {"level": 1, "exp": 0}
-    users[message.author]["exp"] += random.randint(5, 15)
+# Command to award XP to a user
+@tree.command(name="givexp", description="Give XP to a user.", guild=discord.Object(id=guildId))
+async def command(interaction, user: discord.Member, xp: int):
+    user_data = get_user_data(user.id)
+    user_data['xp'] += xp
+    save_user_data(user.id, user_data)
+    await interaction.response.send_message(f"{user.mention} has been awarded {xp} XP!")
 
-    # Chec
-    user = users[message.author]
-    if user["exp"] >= 100:
-        user["level"] += 1
-        user["exp"] = 0
-        await message.channel.send(f"{message.author.mention} has leveled up to level {user['level']}!")
+# Command to check a user's level and XP
+@tree.command(name="level", description="Check a user's level and XP.", guild=discord.Object(id=guildId))
+async def command(interaction, user: discord.Member):
+    user_data = get_user_data(user.id)
+    await interaction.response.send_message(f"{user.mention} is level {user_data['level']} with {user_data['xp']} XP.")
 
-    if message.content == "-level":
-        print('')
-        print(Fore.MAGENTA + 'level command used')
-        await message.channel.send(
-            f"{message.author.mention} is level {user['level']} with {user['exp']} experience points. Well done :)")
 
 # Ping Command
 @tree.command(name="ping", description="Check the bot's ping.", guild=discord.Object(id=guildId))
 async def command(interaction):
     await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
 
-# Leaderboard Command
-@tree.command(name="leaderboard", description="View the leaderboard.", guild=discord.Object(id=guildId))
-async def command(interaction):
-    sorted_users = sorted(users.items(), key=lambda x: x[1]["level"], reverse=True)
-    # Create an embed with the quote and its author
-    embed = discord.Embed(title="Leaderboard", description="", color=0x00ff33)
-    embed.set_author(name="Leaderboard")
-
-    for i, user in enumerate(sorted_users):
-        embed.add_field(name=f"#{i+1} {user[0].name}", value=f"Level: {user[1]['level']}\nExperience: {user[1]['exp']}", inline=False)
-
-    await interaction.response.send_message(embed=embed)
 
 @tree.command(name="giverole", description="give users a role", guild=discord.Object(id=guildId))
 async def command(interaction, role: Role, member: discord.Member):
@@ -216,5 +216,4 @@ async def on_ready():
     print(Fore.CYAN + f'Successfully logged in as {client.user}!')
     print('-------------------')
     print('Commands now online')
-
 client.run('ADD_YOU_BOT_TOKEN_HERE')
