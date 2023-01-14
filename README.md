@@ -26,3 +26,7 @@ this file is still in development but To run mainv2.py
 
 Make sure to use the -announce command in the channel you want to announce and when pinging a role do it like this - <@&roleid>
 
+## mainv2.py notes
+
+please make sure you have all packages installed and add token and guildid
+
