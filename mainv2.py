@@ -1,6 +1,7 @@
 #This project is made by ExplodeCode, OpenSourceSimon, Tim, Cattopy The Web
 
 import discord
+from discord.ext import commands
 from discord import app_commands
 from discord import Role
 from colorama import init, Fore, Back, Style
@@ -9,7 +10,7 @@ import requests
 import bs4
 import json
 import math
-guildId = 12345  # Replace with Guild Id
+guildId = 1037450276212318338  # Replace with Guild Id
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -44,19 +45,15 @@ async def level(interaction, member: discord.Member):
         await interaction.response.send_message(f"{member.mention} is currently level {user_data[member]['level']} with {user_data[member]['xp']} XP.")
     else:
         await interaction.response.send_message(f"{member.mention} is not in the user data.")
-
 @tree.command(name="givexp", description="Give XP to a user", guild=discord.Object(id=guildId))
 async def givexp(interaction, member: discord.Member, xp: int):
-    required_role = discord.utils.get(member.guild.roles, name="management")
-    if required_role in member.roles:
-        if member.id not in user_data:
-            user_data[member.id] = {"xp": 0, "level": 1}
-        user_data[member.id]["xp"] += xp
-        user_data[member.id]["level"] = math.floor(0.1 * math.sqrt(user_data[member.id]["xp"]))
-        await interaction.response.send_message(f"{member.mention} has been given {xp} XP. They now have {user_data[member.id]['xp']} XP and are level {user_data[member.id]['level']}.")
-    else:
-        await interaction.response.send_message("You do not have permission")
-        print(Fore.RED + f'xp was not given to {member.mention} due to error')
+    if member.id not in user_data:
+        user_data[member.id] = {"xp": 0, "level": 1}
+    user_data[member.id]["xp"] += xp
+    user_data[member.id]["level"] = math.floor(0.1 * math.sqrt(user_data[member.id]["xp"]))
+    await interaction.response.send_message(f"{member.mention} has been given {xp} XP. They now have {user_data[member.id]['xp']} XP and are level {user_data[member.id]['level']}.")
+    print(Fore.GREEN + f'xp was given to {member.mention}')
+
 
 @tree.command(name="leaderboard", description="View the leaderboard", guild=discord.Object(id=guildId))
 async def leaderboard(interaction):
@@ -73,21 +70,21 @@ async def leaderboard(interaction):
 async def command(interaction):
     await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
 
+@tree.command(name="giverole", description="Assign a role to a user", guild=discord.Object(id=guildId))
+@commands.has_permissions(manage_roles=True)
+async def giverole(interaction, member: discord.Member, role: discord.Role):
+    await member.add_roles(role)
+    await interaction.response.send_message(f"{member.mention} has been given the {role.name} role.")
+
+
 @tree.command(name="bored", description="Generates a random activity to do when feeling bored.")
 async def bored(interaction):
     activities = ["play a game", "watch a movie", "read a book", "Learn a new coding language", "listen to music", "go for a walk", "call a friend", "write a letter", "paint a picture", "cook a new recipe", "learn a new skill"]
     activity = random.choice(activities)
     await interaction.response.send_message(f"Why not try to: {activity}")
 
-    
-@tree.command(name="giverole", description="give users a role", guild=discord.Object(id=guildId))
-async def giverole(interaction, member: discord.Member, role: discord.Role):
-    required_role = discord.utils.get(member.guild.roles, name="management")
-    if required_role in interaction.author.roles:
-        await member.add_roles(role)
-        await interaction.response.send_message(f"{role.name} role has been added to {member.mention}")
-    else:
-        await interaction.response.send_message("You do not have permission to use this command")
+
+
 
 
 @tree.command(name="announce", description="Make an announcement.", guild=discord.Object(id=guildId))
@@ -244,4 +241,6 @@ async def on_ready():
     print('-------------------')
     print(Fore.GREEN + '-------------------')
     print(Fore.GREEN + f'{client.user} is now online!')
+
+
 client.run('ADD_YOU_BOT_TOKEN_HERE')
