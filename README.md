@@ -19,4 +19,4 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 
 
 # Notes:
-Make sure to use the -announce command in the channel you want to announce and when pinging a role do it like this - <@&roleid>
+THIS PROJECT IS STILL UNDERDEVELOPMENT
