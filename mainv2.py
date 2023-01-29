@@ -10,7 +10,7 @@ import requests
 import bs4
 import json
 import math
-guildId = 1037450276212318338  # Replace with Guild Id
+guildId = 123456  # Replace with Guild Id
 
 intents = discord.Intents.default()
 intents.message_content = True
