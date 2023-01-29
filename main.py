@@ -24,26 +24,37 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 tree = app_commands.CommandTree(client)
-# colors of text in terminal: yellow=quote.
 
-# Create an empty dictionary to store user data
-
-# Create an empty dictionary to store user data
-
-user_data = {}
 
 # Define the amount of XP needed to level up
 level_up_xp = 150
 
+@client.event
+async def on_ready():
+    await tree.sync(guild=discord.Object(id=guildId))
+    print(Fore.CYAN + f"Successfully logged in as {client.user}")
+    print("Packages and commands are loaded")
+    print("User data loaded")
+    print(Fore.GREEN + "-------------------")
+    print(Fore.GREEN + f"Thanks for using Bob the Bot! {client.user} is now online")
 
 # Function to add XP and level up the user
 def add_xp(user, xp):
+    f = open("user_data.json", "r")
+    global user_data
+    user_data = json.load(f)
     if user not in user_data:
-        user_data[user] = {"xp": 0, "level": 1}
+        user_data[user] = {"xp": xp, "level": 1}
+        with open("user_data.json", "w") as f:
+            json.dump(user_data, f)
     user_data[user]["xp"] += xp
+    # Update the json values
+    with open("user_data.json", "w") as f:
+        json.dump(user_data, f)
     if user_data[user]["xp"] >= level_up_xp:
         user_data[user]["level"] += 1
         user_data[user]["xp"] = 0
+    f.close()
 
 
 @tree.command(
@@ -51,16 +62,21 @@ def add_xp(user, xp):
     description="View your current level",
     guild=discord.Object(id=guildId),
 )
-async def level(interaction, member: discord.Member):
+async def level(interaction, member: discord.Member = None):
     if member is None:
-        member = interaction.message.author
-    if member in user_data:
+        member = interaction.user
+    member = member.id
+    f = open("user_data.json", "r")
+    global user_data
+    user_data = json.load(f)
+    f.close()
+    if str(member) in user_data:
         await interaction.response.send_message(
-            f"{member.mention} is currently level {user_data[member]['level']} with {user_data[member]['xp']} XP."
+            f"<@{member}> is currently level {user_data[str(member)]['level']} with {user_data[str(member)]['xp']} XP."
         )
     else:
         await interaction.response.send_message(
-            f"{member.mention} is not in the user data."
+            f"<@{member}> is not in the user data."
         )
 
 
@@ -84,7 +100,7 @@ async def givexp(interaction, member: discord.Member, xp: int):
     name="leaderboard",
     description="View the leaderboard",
     guild=discord.Object(id=guildId),
-)
+) # TODO fix this
 async def leaderboard(interaction):
     leaderboard = sorted(user_data.items(), key=lambda x: x[1]["level"], reverse=True)
     embed = discord.Embed(title="Leaderboard", color=0x00FF33)
@@ -228,15 +244,7 @@ async def command(interaction, query: str, engine: app_commands.Choice[str]):
     description="Ask the magic 8-ball a question.",
     guild=discord.Object(id=guildId),
 )
-async def command(interaction, query: str):
-    # Get the question from the message
-    question = query
-
-    # Check if the question is empty
-    if len(question) == 0:
-        await interaction.response.send_message("You didn't ask a question!")
-        return
-
+async def command(interaction, question: str):
     # Select a random response
     responses = [
         "It is certain.",
@@ -303,15 +311,12 @@ async def command(interaction, problem: app_commands.Range[str, 1]):
     # Send the result to the channel
     await interaction.response.send_message(f"Result: {result}")
 
-
-# When Bot is ready.
+# When a message is sent
 @client.event
-async def on_ready():
-    await tree.sync(guild=discord.Object(id=guildId))
-    print(Fore.CYAN + f"Successfully logged in as {client.user}")
-    print("Packages and commands are loaded")
-    print(Fore.GREEN + "-------------------")
-    print(Fore.GREEN + f"Thanks for using Bob the Bot! {client.user} is now online")
+async def on_message(message):
+    user = message.author.id
+    return add_xp(user, random.randint(1, 5))
+
 
 
 client.run(token)
