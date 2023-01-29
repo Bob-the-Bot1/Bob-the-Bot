@@ -19,4 +19,4 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 
 
 # Notes:
-THIS PROJECT IS STILL UNDERDEVELOPMENT
+THIS PROJECT IS STILL UNDER DEVELOPMENT
