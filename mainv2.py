@@ -1,4 +1,4 @@
-#This project is made by ExplodeCode, OpenSourceSimon, Tim, Cattopy The Web
+# This project is made by ExplodeCode, OpenSourceSimon, Tim, Cattopy The Web
 
 import discord
 from discord.ext import commands
@@ -10,7 +10,12 @@ import requests
 import bs4
 import json
 import math
-guildId = 123456  # Replace with Guild Id
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+token = os.getenv("TOKEN")
+guildId = os.getenv("GUILD_ID")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -28,6 +33,7 @@ user_data = {}
 # Define the amount of XP needed to level up
 level_up_xp = 150
 
+
 # Function to add XP and level up the user
 def add_xp(user, xp):
     if user not in user_data:
@@ -37,21 +43,26 @@ def add_xp(user, xp):
         user_data[user]["level"] += 1
         user_data[user]["xp"] = 0
 
+
 @tree.command(name="level", description="View your current level", guild=discord.Object(id=guildId))
 async def level(interaction, member: discord.Member):
     if member is None:
         member = interaction.message.author
     if member in user_data:
-        await interaction.response.send_message(f"{member.mention} is currently level {user_data[member]['level']} with {user_data[member]['xp']} XP.")
+        await interaction.response.send_message(
+            f"{member.mention} is currently level {user_data[member]['level']} with {user_data[member]['xp']} XP.")
     else:
         await interaction.response.send_message(f"{member.mention} is not in the user data.")
+
+
 @tree.command(name="givexp", description="Give XP to a user", guild=discord.Object(id=guildId))
 async def givexp(interaction, member: discord.Member, xp: int):
     if member.id not in user_data:
         user_data[member.id] = {"xp": 0, "level": 1}
     user_data[member.id]["xp"] += xp
     user_data[member.id]["level"] = math.floor(0.1 * math.sqrt(user_data[member.id]["xp"]))
-    await interaction.response.send_message(f"{member.mention} has been given {xp} XP. They now have {user_data[member.id]['xp']} XP and are level {user_data[member.id]['level']}.")
+    await interaction.response.send_message(
+        f"{member.mention} has been given {xp} XP. They now have {user_data[member.id]['xp']} XP and are level {user_data[member.id]['level']}.")
     print(Fore.GREEN + f'xp was given to {member.mention}')
 
 
@@ -62,13 +73,16 @@ async def leaderboard(interaction):
     for i, user in enumerate(leaderboard):
         member = interaction.message.guild.get_member(int(user[0]))
         if member:
-            embed.add_field(name=f"{i+1}. {member.name}", value=f"Level: {user[1]['level']} XP: {user[1]['xp']}", inline=False)
+            embed.add_field(name=f"{i + 1}. {member.name}", value=f"Level: {user[1]['level']} XP: {user[1]['xp']}",
+                            inline=False)
     await interaction.response.send_message(embed=embed)
 
-#ping
+
+# ping
 @tree.command(name="ping", description="Check the bot's ping.", guild=discord.Object(id=guildId))
 async def command(interaction):
     await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
+
 
 @tree.command(name="giverole", description="Assign a role to a user", guild=discord.Object(id=guildId))
 @commands.has_permissions(manage_roles=True)
@@ -79,33 +93,26 @@ async def giverole(interaction, member: discord.Member, role: discord.Role):
 
 @tree.command(name="bored", description="Generates a random activity to do when feeling bored.")
 async def bored(interaction):
-    activities = ["play a game", "watch a movie", "read a book", "Learn a new coding language", "listen to music", "go for a walk", "call a friend", "write a letter", "paint a picture", "cook a new recipe", "learn a new skill"]
+    activities = ["play a game", "watch a movie", "read a book", "Learn a new coding language", "listen to music",
+                  "go for a walk", "call a friend", "write a letter", "paint a picture", "cook a new recipe",
+                  "learn a new skill"]
     activity = random.choice(activities)
     await interaction.response.send_message(f"Why not try to: {activity}")
 
 
-
-
-
 @tree.command(name="announce", description="Make an announcement.", guild=discord.Object(id=guildId))
 async def command(interaction, *, message: str):
-    guild = client.get_guild(guildId)
     await interaction.response.send_message(message)
 
 
 @tree.command(name="quote", description="Get a random quote.", guild=discord.Object(id=guildId))
 async def command(interaction):
-    # Fetch a random quote from a website
-    res = requests.get("https://www.goodreads.com/quotes")
-    soup = bs4.BeautifulSoup(res.text, 'html.parser')
-    quote_tags = soup.select('.quoteText')
-    author_tags = soup.select('.authorOrTitle')
-    quote = quote_tags[random.randint(0, len(quote_tags) - 1)].getText().strip()
-    author = author_tags[random.randint(0, len(author_tags) - 1)].getText().strip()
-
-    # Create an embed with the quote and its author
-    embed = discord.Embed(title="Quote of the day", description=quote, color=0x00ff33)
-    embed.set_author(name='quote')
+    response = requests.get("https://quotable.io/random")
+    json_data = json.loads(response.text)
+    content = json_data["content"]
+    author = json_data["author"]
+    embed = discord.Embed(title="Quote", description=content, color=0x00ff33)
+    embed.set_footer(text=author)
     await interaction.response.send_message(embed=embed)
 
 
@@ -153,12 +160,11 @@ async def command(interaction, query: app_commands.Range[str, 1]):
     await interaction.response.send_message(embed=embed)
 
 
-
-#8ball command
+# 8ball command
 
 
 @tree.command(name="8ball", description="Ask the magic 8-ball a question.", guild=discord.Object(id=guildId))
-async def command(interaction, query:str):
+async def command(interaction, query: str):
     # Get the question from the message
     question = query
 
@@ -168,32 +174,16 @@ async def command(interaction, query:str):
         return
 
     # Select a random response
-    responses = [
-        "It is certain.",
-        "It is decidedly so.",
-        "Without a doubt.",
-        "Yes - definitely.",
-        "You may rely on it.",
-        "As I see it, yes.",
-        "Most likely.",
-        "Outlook good.",
-        "Yes.",
-        "Signs point to yes.",
-        "Reply hazy, try again.",
-        "Ask again later.",
-        "Better not tell you now.",
-        "Cannot predict now.",
-        "Concentrate and ask again.",
-        "Don't count on it.",
-        "My reply is no.",
-        "My sources say no.",
-        "Outlook not so good.",
-        "Very doubtful."
-    ]
+    responses = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.",
+        "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.",
+        "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.",
+        "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.",
+        "Outlook not so good.", "Very doubtful."]
     response = random.choice(responses)
 
     # Send the response
     await interaction.response.send_message(f"Question: {question}\nAnswer: {response}")
+
 
 # Math command
 @tree.command(name="math", description="Solve a math problem", guild=discord.Object(id=guildId))
@@ -233,14 +223,10 @@ async def command(interaction, problem: app_commands.Range[str, 1]):
 @client.event
 async def on_ready():
     await tree.sync(guild=discord.Object(id=guildId))
-    print(Fore.CYAN + f'Successfully logged in as {client.user}!')
-    print('-------------------')
-    print('packages are working perfectly')
-    print('-------------------')
-    print('commands are working')
-    print('-------------------')
+    print(Fore.CYAN + f'Successfully logged in as {client.user}')
+    print('Packages and commands are loaded')
     print(Fore.GREEN + '-------------------')
-    print(Fore.GREEN + f'{client.user} is now online!')
+    print(Fore.GREEN + f'Thanks for using Bob the Bot! {client.user} is now online')
 
 
-client.run('ADD_YOU_BOT_TOKEN_HERE')
+client.run(token)
