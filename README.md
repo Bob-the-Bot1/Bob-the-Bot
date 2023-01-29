@@ -17,8 +17,6 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 3. Rename `.env.template` to `.env` and add your token and Guild ID
 4. Run `python main.py` and enjoy!
 
-## Experimental Version
-Do above steps but use `python mainv2.py` instead
 
 # Notes:
 Make sure to use the -announce command in the channel you want to announce and when pinging a role do it like this - <@&roleid>

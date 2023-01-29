@@ -1,443 +1,317 @@
+# This project is made by ExplodeCode, OpenSourceSimon, Tim, Cattopy The Web
+
 import discord
-import os
-import json
-import datetime
-import asyncio
-from dotenv import load_dotenv
+from discord.ext import commands
+from discord import app_commands
+from discord import Role
 from colorama import init, Fore, Back, Style
+import calendar
+import datetime
 import random
 import requests
 import bs4
+import json
 import math
-
-# colors of text in terminal: yellow=quote.
+from dotenv import load_dotenv
+import os
 
 load_dotenv()
-client = discord.Client()
-
-quotes = [
-    "The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle. As with all matters of the heart, you'll know when you find it. - Steve Jobs",
-    "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart. - Helen Keller",
-    "We may encounter many defeats but we must not be defeated. - Maya Angelou",
-    "Success is not final, failure is not fatal: It is the courage to continue that counts. - Winston Churchill",
-    "Hardships often prepare ordinary people for an extraordinary destiny. - C.S. Lewis",
-    "A hacker is someone trying to figure out a way to make toast with a coffee maker. Wau Holland - Chaos Computer Club Founder",
-    "You can't live someone else's expectations in life. It's a recipe for disaster. - Bear Grylls",
-    "Improvise. Adapt. Overcome - Bear Grylls",
-    "The greatest glory in living lies not in never falling, but in rising every time we fall. -Nelson Mandela",
-    "The way to get started is to quit talking and begin doing. -Walt Disney",
-    "Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking. -Steve Jobs",
-    "If life were predictable it would cease to be life, and be without flavor. -Eleanor Roosevelt",
-    "If you look at what you have in life, you'll always have more. If you look at what you don't have in life, you'll never have enough. -Oprah Winfrey",
-    "If you set your goals ridiculously high and it's a failure, you will fail above everyone else's success. -James Cameron",
-    "Life is what happens when you're busy making other plans. -John Lennon",
-    "Spread love everywhere you go. Let no one ever come to you without leaving happier. -Mother Teresa",
-    "When you reach the end of your rope, tie a knot in it and hang on. -Franklin D. Roosevelt",
-    "Always remember that you are absolutely unique. Just like everyone else. -Margaret Mead",
-    "Don't judge each day by the harvest you reap but by the seeds that you plant. -Robert Louis Stevenson",
-    "The future belongs to those who believe in the beauty of their dreams. -Eleanor Roosevelt",
-    "Tell me and I forget. Teach me and I remember. Involve me and I learn. -Benjamin Franklin",
-    "The best and most beautiful things in the world cannot be seen or even touched — they must be felt with the heart. -Helen Keller",
-    "It is during our darkest moments that we must focus to see the light. -Aristotle",
-    "Whoever is happy will make others happy too. -Anne Frank",
-    "Do not go where the path may lead, go instead where there is no path and leave a trail. -Ralph Waldo Emerson"
-    "You will face many defeats in life, but never let yourself be defeated. - Maya Angelou",
-    "The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela",
-    "In the end, it's not the years in your life that count. It's the life in your years. - Abraham Lincoln",
-    "Never let the fear of striking out keep you from playing the game. - Babe Ruth",
-    "Life is either a daring adventure or nothing at all. - Helen Keller",
-    "Many of life's failures are people who did not realize how close they were to success when they gave up. - Thomas A. Edison",
-    "You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose. -Dr. Seuss",
-    "When you feel like quitting remember why you started. - David Bombal",
-    "The distance between your dreams and reality is called action. - David Bombal",
-    "You only leave once but if you do it right once is enough. - David Bombal",
-    "Dreams wont work unless you do. - David Bombal",
-]
+token = os.getenv("TOKEN")
+guildId = os.getenv("GUILD_ID")
 
 intents = discord.Intents.default()
-intents = discord.Intents(members=True, presences=True)
+intents.message_content = True
 client = discord.Client(intents=intents)
-users = {}
+
+tree = app_commands.CommandTree(client)
+# colors of text in terminal: yellow=quote.
+
+# Create an empty dictionary to store user data
+
+# Create an empty dictionary to store user data
+
+user_data = {}
+
+# Define the amount of XP needed to level up
+level_up_xp = 150
 
 
-@client.event
-async def on_ready():
-    print(Fore.CYAN + f"Successfully logged in as {client.user}!")
-    print("-------------------")
-    print("This is for testing only")
+# Function to add XP and level up the user
+def add_xp(user, xp):
+    if user not in user_data:
+        user_data[user] = {"xp": 0, "level": 1}
+    user_data[user]["xp"] += xp
+    if user_data[user]["xp"] >= level_up_xp:
+        user_data[user]["level"] += 1
+        user_data[user]["xp"] = 0
 
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
+@tree.command(
+    name="level",
+    description="View your current level",
+    guild=discord.Object(id=guildId),
+)
+async def level(interaction, member: discord.Member):
+    if member is None:
+        member = interaction.message.author
+    if member in user_data:
+        await interaction.response.send_message(
+            f"{member.mention} is currently level {user_data[member]['level']} with {user_data[member]['xp']} XP."
+        )
+    else:
+        await interaction.response.send_message(
+            f"{member.mention} is not in the user data."
+        )
+
+
+@tree.command(
+    name="givexp", description="Give XP to a user", guild=discord.Object(id=guildId)
+)
+async def givexp(interaction, member: discord.Member, xp: int):
+    if member.id not in user_data:
+        user_data[member.id] = {"xp": 0, "level": 1}
+    user_data[member.id]["xp"] += xp
+    user_data[member.id]["level"] = math.floor(
+        0.1 * math.sqrt(user_data[member.id]["xp"])
+    )
+    await interaction.response.send_message(
+        f"{member.mention} has been given {xp} XP. They now have {user_data[member.id]['xp']} XP and are level {user_data[member.id]['level']}."
+    )
+    print(Fore.GREEN + f"xp was given to {member.mention}")
+
+
+@tree.command(
+    name="leaderboard",
+    description="View the leaderboard",
+    guild=discord.Object(id=guildId),
+)
+async def leaderboard(interaction):
+    leaderboard = sorted(user_data.items(), key=lambda x: x[1]["level"], reverse=True)
+    embed = discord.Embed(title="Leaderboard", color=0x00FF33)
+    for i, user in enumerate(leaderboard):
+        member = interaction.message.guild.get_member(int(user[0]))
+        if member:
+            embed.add_field(
+                name=f"{i + 1}. {member.name}",
+                value=f"Level: {user[1]['level']} XP: {user[1]['xp']}",
+                inline=False,
+            )
+    await interaction.response.send_message(embed=embed)
+
+
+# ping
+@tree.command(
+    name="ping", description="Check ping of the bot.", guild=discord.Object(id=guildId)
+)
+async def command(interaction):
+    await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
+
+
+@tree.command(
+    name="giverole",
+    description="Assign a role to a user",
+    guild=discord.Object(id=guildId),
+)
+@commands.has_permissions(manage_roles=True)
+async def giverole(interaction, member: discord.Member, role: discord.Role):
+    await member.add_roles(role)
+    await interaction.response.send_message(
+        f"{member.mention} has been given the {role.name} role."
+    )
+
+
+@tree.command(
+    name="bored",
+    description="Generates a random activity to do when feeling bored.",
+    guild=discord.Object(id=guildId),
+)
+async def bored(interaction):
+    response = requests.get("https://www.boredapi.com/api/activity")
+    json_data = json.loads(response.text)
+    activity = json_data["activity"]
+    await interaction.response.send_message(f"Why not try to: {activity}")
+
+
+@tree.command(
+    name="announce",
+    description="Make an announcement.",
+    guild=discord.Object(id=guildId),
+)
+async def command(interaction, *, message: str):
+    await interaction.response.send_message(message)
+
+
+@tree.command(
+    name="quote", description="Get a random quote.", guild=discord.Object(id=guildId)
+)
+async def command(interaction):
+    response = requests.get("https://quotable.io/random")
+    json_data = json.loads(response.text)
+    content = json_data["content"]
+    author = json_data["author"]
+    embed = discord.Embed(title="Quote", description=content, color=0x00FF33)
+    embed.set_footer(text=author)
+    await interaction.response.send_message(embed=embed)
+
+
+@tree.command(name="hello", description="Say hi!", guild=discord.Object(id=guildId))
+async def command(interaction):
+    greetings = ["Hello", "Hi", "Greetings", "Hola", "Bonjour", "Konnichiwa"]
+    username = interaction.message.author.name
+    await interaction.response.send_message(f"{random.choice(greetings)} {username}!")
+
+
+# Info Command
+@tree.command(
+    name="info", description="Get info about the bot", guild=discord.Object(id=guildId)
+)
+async def command(interaction):
+    embed = discord.Embed(
+        title="Info",
+        description="I am a Top G bot made in python, I am an open source project and anyone can contribute!",
+        color=0x00FF33,
+    )
+    embed.set_author(name="Bob the Bot")
+    embed.add_field(
+        name="Developers",
+        value="ExplodeCode \n OpenSourceSimon \n Tim \n Cattopy The Web",
+        inline=False,
+    )
+    await interaction.response.send_message(embed=embed)
+
+
+# Calendar Command
+@tree.command(
+    name="calendar", description="View the calendar", guild=discord.Object(id=guildId)
+)
+async def command(interaction):
+    yy = datetime.datetime.now().year
+    mm = datetime.datetime.now().month
+    await interaction.response.send_message(calendar.month(yy, mm))
+
+
+# Search Command
+@tree.command(
+    name="search", description="Search the internet.", guild=discord.Object(id=guildId)
+)
+@app_commands.choices(
+    engine=[
+        app_commands.Choice(name="Google", value="google"),
+        app_commands.Choice(name="Duck Duck Go", value="duckduckgo"),
+        app_commands.Choice(name="Bing", value="bing"),
+        app_commands.Choice(name="Let Me Google That", value="letmegoogle"),
+    ]
+)
+async def command(interaction, query: str, engine: app_commands.Choice[str]):
+    print(engine)  # Choice(name='Google', value='google')
+    engine = engine.value
+    query = query.rstrip().replace(" ", "+")
+    if engine == "google":
+        await interaction.response.send_message(f"https://google.com/search?q={query}")
+    elif engine == "duckduckgo":
+        await interaction.response.send_message(f"https://duckduckgo.com/?q={query}")
+    elif engine == "bing":
+        await interaction.response.send_message(f"https://bing.com/search?q={query}")
+    elif engine == "letmegoogle":
+        await interaction.response.send_message(
+            f"https://letmegooglethat.com/?q={query}"
+        )
+    else:
+        await interaction.response.send_message("Invalid engine.")
+
+
+# 8ball command
+
+
+@tree.command(
+    name="8ball",
+    description="Ask the magic 8-ball a question.",
+    guild=discord.Object(id=guildId),
+)
+async def command(interaction, query: str):
+    # Get the question from the message
+    question = query
+
+    # Check if the question is empty
+    if len(question) == 0:
+        await interaction.response.send_message("You didn't ask a question!")
         return
 
-    elif message.content.startswith("-hello"):
-        print("")
-        print(Fore.GREEN + "----------------------------------")
-        print(Fore.GREEN + "hello command used")
-        await message.channel.send("Hello!")
+    # Select a random response
+    responses = [
+        "It is certain.",
+        "It is decidedly so.",
+        "Without a doubt.",
+        "Yes - definitely.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Outlook good.",
+        "Yes.",
+        "Signs point to yes.",
+        "Reply hazy, try again.",
+        "Ask again later.",
+        "Better not tell you now.",
+        "Cannot predict now.",
+        "Concentrate and ask again.",
+        "Don't count on it.",
+        "My reply is no.",
+        "My sources say no.",
+        "Outlook not so good.",
+        "Very doubtful.",
+    ]
+    response = random.choice(responses)
 
-    elif message.content.startswith("-help"):
-        print("")
-        print(Fore.GREEN + "--------------------------------------")
-        print(Fore.GREEN + "help command used")
-        await message.channel.send(
-            "List of Commands\n-help > Provides this message.\n-info > Provides a list of information.\n-hello > Replies with hello!\n-8ball > Plays a game of 8ball.\n-roll > Randomly rolls a number between 1 and 6.\n-math > Solves your math equation."
+    # Send the response
+    await interaction.response.send_message(f"Question: {question}\nAnswer: {response}")
+
+
+# Math command
+@tree.command(
+    name="math", description="Solve a math problem", guild=discord.Object(id=guildId)
+)
+async def command(interaction, problem: app_commands.Range[str, 1]):
+    # Split the message into a list of words
+    words = problem.split()
+    # Make sure we have enough arguments
+    if len(words) != 3:
+        await interaction.response.send_message(
+            "Invalid number of arguments. Use -math [number] [operation] [number]"
         )
-
-        print("")
-        print(Fore.RED + "------------------------------------------")
-        print(Fore.RED + "help command output completed")
-    elif message.content.startswith("-roll"):
-        print("")
-        print(Fore.GREEN + "-----------------------------------")
-        print(Fore.GREEN + "roll command was used")
-        dice_roll = random.randint(1, 6)
-        await message.channel.send(f"You rolled a {dice_roll}!")
-
-    elif message.content.startswith("-info"):
-        print("")
-        print("-----------------------------------")
-        print("info command used")
-        await message.channel.send(
-            "I am a bot made and programmed by @ExplodeCode and I will only work when ExplodeCode turns me on"
-        )
-
-    elif message.content.startswith("-calendar"):
-        import calendar
-
-        yy = 2023
-        mm = 1
-        print("")
-        print(Fore.CYAN + "-----------------------------------")
-        print(Fore.CYAN + "calendar command used" + calendar.month(yy, mm))
-        await message.channel.send(calendar.month(yy, mm))
-
-    if message.content.startswith("-8ball"):
-        # Get the question from the message
-        print("")
-        print(Fore.LIGHTBLUE_EX + "8ball command used")
-        question = message.content[7:]
-
-        # Check if the question is empty
-        if len(question) == 0:
-            await message.channel.send("You didn't ask a question!")
+        return
+    # Get the first number and operation from the message
+    number1 = float(words[0])
+    operation = words[1]
+    # Get the second number from the message
+    number2 = float(words[2])
+    # Perform the requested operation
+    if operation == "+":
+        result = number1 + number2
+    elif operation == "-":
+        result = number1 - number2
+    elif operation == "*":
+        result = number1 * number2
+    elif operation == "/":
+        if number2 == 0:
+            await interaction.response.send_message("Error: Cannot divide by zero.")
             return
+        result = number1 / number2
 
-        # Select a random response
-        responses = [
-            "It is certain.",
-            "It is decidedly so.",
-            "Without a doubt.",
-            "Yes - definitely.",
-            "You may rely on it.",
-            "As I see it, yes.",
-            "Most likely.",
-            "Outlook good.",
-            "Yes.",
-            "Signs point to yes.",
-            "Reply hazy, try again.",
-            "Ask again later.",
-            "Better not tell you now.",
-            "Cannot predict now.",
-            "Concentrate and ask again.",
-            "Don't count on it.",
-            "My reply is no.",
-            "My sources say no.",
-            "Outlook not so good.",
-            "Very doubtful.",
-        ]
-        response = random.choice(responses)
-
-        # Send the response
-        await message.channel.send(f"Question: {question}\nAnswer: {response}")
-
-    elif message.content.startswith("-math"):
-        print(Fore.BLUE + "math command used")
-        # Split the message into a list of words
-        words = message.content.split()
-        # Make sure we have enough arguments
-        if len(words) != 4:
-            await message.channel.send(
-                "Invalid number of arguments. Use -math [number] [operation] [number]"
-            )
-            return
-        # Get the first number and operation from the message
-        number1 = float(words[1])
-        operation = words[2]
-        # Get the second number from the message
-        number2 = float(words[3])
-        # Perform the requested operation
-        if operation == "+":
-            result = number1 + number2
-        elif operation == "-":
-            result = number1 - number2
-        elif operation == "*":
-            result = number1 * number2
-        elif operation == "/":
-            if number2 == 0:
-                await message.channel.send("Error: Cannot divide by zero.")
-                return
-            result = number1 / number2
-
-        else:
-            await message.channel.send("Invalid operation. Use +, -, *, or /.")
-            return
-        # Send the result to the channel
-        await message.channel.send(f"Result: {result}")
-
-    elif message.content.startswith("-echo"):
-        print("")
-        print("echo command used")
-        # Get the message to echo from the command
-        echo = message.content[6:]
-        # Send the message to the channel
-        await message.channel.send(echo)
-
-    elif message.author not in users:
-        users[message.author] = {"level": 1, "exp": 0}
-    users[message.author]["exp"] += random.randint(5, 15)
-
-    # Chec
-    user = users[message.author]
-    if user["exp"] >= 100:
-        user["level"] += 1
-        user["exp"] = 0
-        await message.channel.send(
-            f"{message.author.mention} has leveled up to level {user['level']}!"
-        )
-
-    elif message.content == "-level":
-        print("")
-        print(Fore.MAGENTA + "level command used")
-        await message.channel.send(
-            f"{message.author.mention} is level {user['level']} with {user['exp']} experience points. Well done :)"
-        )
-    elif message.content == "-quote":
-        print("")
-        print("quote command used")
-        # Select a random quote from the list
-        quote = random.choice(quotes)
-        # Send the quote to the channel
-        await message.channel.send(quote)
-        print(quote)
-
-    elif message.content.startswith("-announce"):
-        print("")
-        print("announce command used")
-        # Get the message to echo from the command
-        echo = message.content[6:]
-        # Send the message to the channel
-        await message.channel.send(echo)
+    else:
+        await interaction.response.send_message("Invalid operation. Use +, -, *, or /.")
+        return
+    # Send the result to the channel
+    await interaction.response.send_message(f"Result: {result}")
 
 
-# birthday!
-
-
-async def check_birthday():
-    await client.wait_until_ready()
-
-    while not client.is_closed():
-        now = datetime.datetime.now()
-        curmonth = int(now.strftime("%m"))
-        curday = int(now.strftime("%d"))
-        curhour = now.strftime("%H")
-        curmin = now.strftime("%M")
-
-        if int(curhour) == 20:
-            print(f"Process 'check_birthday' ran command at {curhour}:{curmin}")
-            with open("birthdays.json") as file:
-                data = json.load(file)
-                for servers, users in data.items():
-                    print(servers)
-                    for user in users:
-                        print(user)
-                        month = data[servers][user]["month"]
-                        day = data[servers][user]["day"]
-                        if month == curmonth and day == curday:
-                            channel_id = data[servers]["announce"]["id"]
-                            bb_channel = client.get_channel(channel_id)
-                            await bb_channel.send(f"It's <@{user}>'s birthday today!")
-            print("Birthday checked!")
-            await asyncio.sleep(864390)  # task runs every day
-        else:
-            print(f"Process 'check_birthday' ran command at {curhour}:{curmin}")
-            # wait for an hour before checking again 'if int(curhour)' again
-            await asyncio.sleep(3600)
-
-
-client.loop.create_task(check_birthday())
-# await asyncio.sleep(86400) # task runs every day
-
-
+# When Bot is ready.
 @client.event
-async def birthday_msg(msg):
-    msgsender = msg.author.id
-    server_id = msg.guild.id
-    if msg.content.startswith("whenbd"):
-        with open("birthdays.json") as file:
-            data = json.load(file)
-            try:
-                sender = data[str(server_id)][str(msgsender)]
-                month = sender["month"]
-                day = sender["day"]
-                await msg.channel.send(f"<@{msgsender}>'s birthday is on {month}/{day}")
-            except KeyError:
-                await msg.channel.send("ID doesn't exist")
-            file.close()
-
-        if msg.content.startswith("+whenbd"):
-            # print(msg.author)
-            liszt = msg.content.split()
-            with open("birthdays.json") as file:
-                try:
-                    if liszt[1] is not None:
-                        try:
-                            msgsender = msg.mentions[0].id
-                            try:
-                                if msg.mentions[1] is not None:
-                                    await msg.channel.send(
-                                        f"<@{msg.author.id}>, you can only @ping 1 person at a time!"
-                                    )
-                                    return
-                            except IndexError:
-                                pass
-                        except IndexError:
-                            await msg.channel.send(
-                                "`Exception error occurred, Server member not found.`"
-                                "\nPlease enter valid @username."
-                            )
-                            return
-                except IndexError:
-                    msgsender = msg.author.id
-                data = json.load(file)
-                try:
-                    sender = data[str(server_id)][str(msgsender)]
-                    month = sender["month"]
-                    day = sender["day"]
-                    await msg.channel.send(
-                        f"<@{msgsender}>'s birthday is on {month}/{day}"
-                    )
-                except KeyError:
-                    await msg.channel.send(
-                        "Member doesn't exist in database. They haven't set their birthday yet."
-                    )
-                file.close()
-
-    if msg.content.startswith("+setbbchannel"):
-        await msg.channel.send("`setting...`")
-        channel_id = msg.channel.id
-
-        with open("birthdays.json", "r+") as file:
-            data = json.load(file)
-            srvid = str(server_id)
-            if srvid not in data:
-                data[srvid] = {}
-            data[srvid]["announce"] = {"id": channel_id, "month": 0, "day": 0}
-            file.close()
-            file = open("birthdays.json", "w")
-            json.dump(data, file)
-            await msg.channel.send(
-                f"Successfully set **#{msg.channel.name}** as announcement channel."
-            )
-
-    if msg.content.startswith("+bbset"):
-        await msg.channel.send("`setting...`")
-
-        try:
-            liszt = msg.content.split()
-            date = liszt[1].split("/")
-            month = int(date[0])
-            day = int(date[1])
-
-            if month > 13 or month < 1:
-                await msg.channel.send(f"`Exception error occurred.`")
-                await msg.channel.send(
-                    "Correct usage is: bbset mm/dd {@another_person}"
-                )
-                return
-            else:
-                pass
-            if month in (1, 3, 5, 7, 8, 10, 12):
-                if day > 31 or day < 1:
-                    await msg.channel.send(f"`Exception error occurred.`")
-                    await msg.channel.send(
-                        "Correct usage is: bbset mm/dd {@another_person}"
-                    )
-                    return
-                else:
-                    pass
-            elif month in (4, 6, 9, 11):
-                if day > 30 or day < 1:
-                    await msg.channel.send(f"`Exception error occurred.`")
-                    await msg.channel.send(
-                        "Correct usage is: bbset mm/dd {@another_person}"
-                    )
-                    return
-                else:
-                    pass
-            elif month == 2:
-                if day > 29 or day < 1:
-                    await msg.channel.send(f"`Exception error occurred.`")
-                    await msg.channel.send(
-                        "Correct usage is: bbset mm/dd {@another_person}"
-                    )
-                    return
-                else:
-                    pass
-            else:
-                await msg.channel.send(f"`Exception error occurred.`")
-                await msg.channel.send(
-                    "Correct usage is: bbset mm/dd {@another_person}"
-                )
-                return
-        except:
-            await msg.channel.send(f"`Exception error occurred.`")
-            await msg.channel.send("Correct usage is: bbset mm/dd {@another_person}")
-            return
-
-        with open("birthdays.json", "r+") as file:
-            data = json.load(file)
-            srvid = str(server_id)
-            if srvid not in data:
-                data[srvid] = {}
-            try:
-                if liszt[2] is not None:
-                    try:
-                        msgsender = msg.mentions[0].id
-                        try:
-                            if msg.mentions[1] is not None:
-                                await msg.channel.send(
-                                    f"<@{msg.author.id}>, you can only @ping 1 person at a time!"
-                                )
-                                return
-                        except IndexError:
-                            pass
-                    except IndexError:
-                        await msg.channel.send(
-                            "`Exception error occurred, Server member not found.`"
-                            "\nPlease enter valid @username."
-                        )
-                        return
-                    data[srvid][str(msgsender)] = {"month": month, "day": day}
-            except IndexError:
-                msgsender = msg.author.id
-                data[srvid][str(msgsender)] = {"month": month, "day": day}
-            file.close()
-            file = open("birthdays.json", "w")
-            json.dump(data, file)
-            await msg.channel.send(
-                f"`Success!`\nBirthday was set on **{month}/{day}** for <@{msgsender}>."
-            )
-
-            if msg.content.startswith("-help"):
-                await msg.channel.send(
-                    "`( {} = optional )`\n"
-                    "`-bbset mm/dd {@another_person}` - to set your birthday\n"
-                    "`-setbbchannel` - to set channel as birthday announcements channel\n"
-                    "`-whenbd {@another_person}` - to view your registered birth date\n"
-                )
+async def on_ready():
+    await tree.sync(guild=discord.Object(id=guildId))
+    print(Fore.CYAN + f"Successfully logged in as {client.user}")
+    print("Packages and commands are loaded")
+    print(Fore.GREEN + "-------------------")
+    print(Fore.GREEN + f"Thanks for using Bob the Bot! {client.user} is now online")
 
 
-client.run("ADD_YOUR_TOKEN_HERE")
+client.run(token)
