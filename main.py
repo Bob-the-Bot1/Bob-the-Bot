@@ -103,7 +103,7 @@ async def leaderboard(interaction):
 @tree.command(
     name="ping", description="Check ping of the bot.", guild=discord.Object(id=guildId)
 )
-async def command(interaction):
+async def ping(interaction):
     await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
 
 
@@ -119,6 +119,17 @@ async def giverole(interaction, member: discord.Member, role: discord.Role):
         f"{member.mention} has been given the {role.name} role."
     )
 
+@tree.command(
+    name="remrole",
+    description="Removes a role from a user",
+    guild=discord.Object(id=guildId),
+)
+@commands.has_permissions(manage_roles=True)
+async def remrole(interaction, member: discord.Member, role: discord.Role):
+    await member.remove_roles(role)
+    await interaction.response.send_message(
+        f"{member.mention} has been removed from the {role.name} role."
+    )
 
 @tree.command(
     name="bored",
@@ -137,14 +148,14 @@ async def bored(interaction):
     description="Make an announcement.",
     guild=discord.Object(id=guildId),
 )
-async def command(interaction, *, message: str):
+async def announce(interaction, *, message: str):
     await interaction.response.send_message(message)
 
 
 @tree.command(
     name="quote", description="Get a random quote.", guild=discord.Object(id=guildId)
 )
-async def command(interaction):
+async def quote(interaction):
     response = requests.get("https://quotable.io/random")
     json_data = json.loads(response.text)
     content = json_data["content"]
@@ -155,7 +166,7 @@ async def command(interaction):
 
 
 @tree.command(name="hello", description="Say hi!", guild=discord.Object(id=guildId))
-async def command(interaction):
+async def hello(interaction):
     greetings = ["Hello", "Hi", "Greetings", "Hola", "Bonjour", "Konnichiwa"]
     username = interaction.message.author.name
     await interaction.response.send_message(f"{random.choice(greetings)} {username}!")
@@ -165,7 +176,7 @@ async def command(interaction):
 @tree.command(
     name="info", description="Get info about the bot", guild=discord.Object(id=guildId)
 )
-async def command(interaction):
+async def info(interaction):
     embed = discord.Embed(
         title="Info",
         description="I am a Top G bot made in python, I am an open source project and anyone can contribute!",
@@ -184,7 +195,7 @@ async def command(interaction):
 @tree.command(
     name="calendar", description="View the calendar", guild=discord.Object(id=guildId)
 )
-async def command(interaction):
+async def cal(interaction):
     yy = datetime.datetime.now().year
     mm = datetime.datetime.now().month
     await interaction.response.send_message(calendar.month(yy, mm))
@@ -202,7 +213,7 @@ async def command(interaction):
         app_commands.Choice(name="Let Me Google That", value="letmegoogle"),
     ]
 )
-async def command(interaction, query: str, engine: app_commands.Choice[str]):
+async def search(interaction, query: str, engine: app_commands.Choice[str]):
     print(engine)  # Choice(name='Google', value='google')
     engine = engine.value
     query = query.rstrip().replace(" ", "+")
@@ -228,7 +239,7 @@ async def command(interaction, query: str, engine: app_commands.Choice[str]):
     description="Ask the magic 8-ball a question.",
     guild=discord.Object(id=guildId),
 )
-async def command(interaction, query: str):
+async def ball(interaction, query: str):
     # Get the question from the message
     question = query
 
@@ -270,7 +281,7 @@ async def command(interaction, query: str):
 @tree.command(
     name="math", description="Solve a math problem", guild=discord.Object(id=guildId)
 )
-async def command(interaction, problem: app_commands.Range[str, 1]):
+async def calc(interaction, problem: app_commands.Range[str, 1]):
     # Split the message into a list of words
     words = problem.split()
     # Make sure we have enough arguments
