@@ -2,7 +2,7 @@
 
 import discord
 from discord.ext import commands
-from discord import app_commands
+
 from discord import Role
 from colorama import init, Fore, Back, Style
 import calendar
@@ -12,18 +12,18 @@ import requests
 import bs4
 import json
 import math
-from dotenv import load_dotenv
+
 import os
 
-load_dotenv()
-token = os.getenv("TOKEN")
-guildId = os.getenv("GUILD_ID")
 
+
+
+guildId = 123456789
 intents = discord.Intents.default()
 intents.message_content = True
-client = discord.Client(intents=intents)
+client = discord.Bot(intents=intents)
 
-tree = app_commands.CommandTree(client)
+
 # colors of text in terminal: yellow=quote.
 
 # Create an empty dictionary to store user data
@@ -46,10 +46,10 @@ def add_xp(user, xp):
         user_data[user]["xp"] = 0
 
 
-@tree.command(
+@client.slash_command(
     name="level",
     description="View your current level",
-    guild=discord.Object(id=guildId),
+
 )
 async def level(interaction, member: discord.Member):
     if member is None:
@@ -59,13 +59,13 @@ async def level(interaction, member: discord.Member):
             f"{member.mention} is currently level {user_data[member]['level']} with {user_data[member]['xp']} XP."
         )
     else:
-        await interaction.response.send_message(
+        await interaction.respond(
             f"{member.mention} is not in the user data."
         )
 
 
-@tree.command(
-    name="givexp", description="Give XP to a user", guild=discord.Object(id=guildId)
+@client.slash_command(
+    name="givexp", description="Give XP to a user"
 )
 async def givexp(interaction, member: discord.Member, xp: int):
     if member.id not in user_data:
@@ -74,16 +74,16 @@ async def givexp(interaction, member: discord.Member, xp: int):
     user_data[member.id]["level"] = math.floor(
         0.1 * math.sqrt(user_data[member.id]["xp"])
     )
-    await interaction.response.send_message(
+    await interaction.respond(
         f"{member.mention} has been given {xp} XP. They now have {user_data[member.id]['xp']} XP and are level {user_data[member.id]['level']}."
     )
     print(Fore.GREEN + f"xp was given to {member.mention}")
 
 
-@tree.command(
+client.slash_command(
     name="leaderboard",
-    description="View the leaderboard",
-    guild=discord.Object(id=guildId),
+    description="View the leaderboard"
+
 )
 async def leaderboard(interaction):
     leaderboard = sorted(user_data.items(), key=lambda x: x[1]["level"], reverse=True)
@@ -96,64 +96,64 @@ async def leaderboard(interaction):
                 value=f"Level: {user[1]['level']} XP: {user[1]['xp']}",
                 inline=False,
             )
-    await interaction.response.send_message(embed=embed)
+    await interaction.respond(embed=embed)
 
 
 # ping
-@tree.command(
-    name="ping", description="Check ping of the bot.", guild=discord.Object(id=guildId)
+@client.slash_command(
+    name="ping", description="Check ping of the bot."
 )
 async def ping(interaction):
-    await interaction.response.send_message(f"Pong! Latency: {client.latency:.2f}s")
+    await interaction.respond(f"Pong! Latency: {client.latency:.2f}s")
 
 
-@tree.command(
+@client.slash_command(
     name="giverole",
     description="Assign a role to a user",
-    guild=discord.Object(id=guildId),
+
 )
 @commands.has_permissions(manage_roles=True)
 async def giverole(interaction, member: discord.Member, role: discord.Role):
     await member.add_roles(role)
-    await interaction.response.send_message(
+    await interaction.respond(
         f"{member.mention} has been given the {role.name} role."
     )
 
-@tree.command(
+@client.slash_command(
     name="remrole",
-    description="Removes a role from a user",
-    guild=discord.Object(id=guildId),
+    description="Removes a role from a user"
+    
 )
 @commands.has_permissions(manage_roles=True)
 async def remrole(interaction, member: discord.Member, role: discord.Role):
     await member.remove_roles(role)
-    await interaction.response.send_message(
+    await interaction.respond(
         f"{member.mention} has been removed from the {role.name} role."
     )
 
-@tree.command(
+@client.slash_command(
     name="bored",
     description="Generates a random activity to do when feeling bored.",
-    guild=discord.Object(id=guildId),
+
 )
 async def bored(interaction):
     response = requests.get("https://www.boredapi.com/api/activity")
     json_data = json.loads(response.text)
     activity = json_data["activity"]
-    await interaction.response.send_message(f"Why not try to: {activity}")
+    await interaction.respond(f"Why not try to: {activity}")
 
 
-@tree.command(
+@client.slash_command(
     name="announce",
-    description="Make an announcement.",
-    guild=discord.Object(id=guildId),
+    description="Make an announcement."
+
 )
 async def announce(interaction, *, message: str):
-    await interaction.response.send_message(message)
+    await interaction.respond(message)
 
 
-@tree.command(
-    name="quote", description="Get a random quote.", guild=discord.Object(id=guildId)
+@client.slash_command(
+    name="quote", description="Get a random quote."
 )
 async def quote(interaction):
     response = requests.get("https://quotable.io/random")
@@ -162,19 +162,19 @@ async def quote(interaction):
     author = json_data["author"]
     embed = discord.Embed(title="Quote", description=content, color=0x00FF33)
     embed.set_footer(text=author)
-    await interaction.response.send_message(embed=embed)
+    await interaction.respond(embed=embed)
 
 
-@tree.command(name="hello", description="Say hi!", guild=discord.Object(id=guildId))
+@client.slash_command(name="hello", description="Say hi!")
 async def hello(interaction):
     greetings = ["Hello", "Hi", "Greetings", "Hola", "Bonjour", "Konnichiwa"]
     username = interaction.message.author.name
-    await interaction.response.send_message(f"{random.choice(greetings)} {username}!")
+    await interaction.respond(f"{random.choice(greetings)} {username}!")
 
 
 # Info Command
-@tree.command(
-    name="info", description="Get info about the bot", guild=discord.Object(id=guildId)
+@client.slash_command(
+    name="info", description="Get info about the bot"
 )
 async def info(interaction):
     embed = discord.Embed(
@@ -188,56 +188,57 @@ async def info(interaction):
         value="ExplodeCode \n OpenSourceSimon \n Tim \n Cattopy The Web",
         inline=False,
     )
-    await interaction.response.send_message(embed=embed)
+    await interaction.respond(embed=embed)
 
 
 # Calendar Command
-@tree.command(
-    name="calendar", description="View the calendar", guild=discord.Object(id=guildId)
+@client.slash_command(
+    name="calendar", description="View the calendar"
 )
 async def cal(interaction):
     yy = datetime.datetime.now().year
     mm = datetime.datetime.now().month
-    await interaction.response.send_message(calendar.month(yy, mm))
+    await interaction.respond(calendar.month(yy, mm))
 
 
 # Search Command
-@tree.command(
-    name="search", description="Search the internet.", guild=discord.Object(id=guildId)
+@client.slash_command(
+    name="search", description="Search the internet."
 )
-@app_commands.choices(
-    engine=[
-        app_commands.Choice(name="Google", value="google"),
-        app_commands.Choice(name="Duck Duck Go", value="duckduckgo"),
-        app_commands.Choice(name="Bing", value="bing"),
-        app_commands.Choice(name="Let Me Google That", value="letmegoogle"),
-    ]
-)
-async def search(interaction, query: str, engine: app_commands.Choice[str]):
+
+
+
+
+
+
+
+
+
+async def search(interaction, query: str, engine: str):
     print(engine)  # Choice(name='Google', value='google')
     engine = engine.value
     query = query.rstrip().replace(" ", "+")
     if engine == "google":
-        await interaction.response.send_message(f"https://google.com/search?q={query}")
+        await interaction.respond(f"https://google.com/search?q={query}")
     elif engine == "duckduckgo":
-        await interaction.response.send_message(f"https://duckduckgo.com/?q={query}")
+        await interaction.respond(f"https://duckduckgo.com/?q={query}")
     elif engine == "bing":
-        await interaction.response.send_message(f"https://bing.com/search?q={query}")
+        await interaction.respond(f"https://bing.com/search?q={query}")
     elif engine == "letmegoogle":
-        await interaction.response.send_message(
+        await interaction.respond(
             f"https://letmegooglethat.com/?q={query}"
         )
     else:
-        await interaction.response.send_message("Invalid engine.")
+        await interaction.respond("Invalid engine.")
 
 
 # 8ball command
 
 
-@tree.command(
+@client.slash_command(
     name="8ball",
-    description="Ask the magic 8-ball a question.",
-    guild=discord.Object(id=guildId),
+    description="Ask the magic 8-ball a question."
+
 )
 async def ball(interaction, query: str):
     # Get the question from the message
@@ -245,7 +246,7 @@ async def ball(interaction, query: str):
 
     # Check if the question is empty
     if len(question) == 0:
-        await interaction.response.send_message("You didn't ask a question!")
+        await interaction.respond("You didn't ask a question!")
         return
 
     # Select a random response
@@ -274,19 +275,19 @@ async def ball(interaction, query: str):
     response = random.choice(responses)
 
     # Send the response
-    await interaction.response.send_message(f"Question: {question}\nAnswer: {response}")
+    await interaction.respond(f"Question: {question}\nAnswer: {response}")
 
 
 # Math command
-@tree.command(
-    name="math", description="Solve a math problem", guild=discord.Object(id=guildId)
+@client.slash_command(
+    name="math", description="Solve a math problem"
 )
-async def calc(interaction, problem: app_commands.Range[str, 1]):
+async def calc(interaction, problem: str):
     # Split the message into a list of words
     words = problem.split()
     # Make sure we have enough arguments
     if len(words) != 3:
-        await interaction.response.send_message(
+        await interaction.respond(
             "Invalid number of arguments. Use -math [number] [operation] [number]"
         )
         return
@@ -304,25 +305,24 @@ async def calc(interaction, problem: app_commands.Range[str, 1]):
         result = number1 * number2
     elif operation == "/":
         if number2 == 0:
-            await interaction.response.send_message("Error: Cannot divide by zero.")
+            await interaction.respond("Error: Cannot divide by zero.")
             return
         result = number1 / number2
 
     else:
-        await interaction.response.send_message("Invalid operation. Use +, -, *, or /.")
+        await interaction.respond("Invalid operation. Use +, -, *, or /.")
         return
     # Send the result to the channel
-    await interaction.response.send_message(f"Result: {result}")
+    await interaction.respond(f"Result: {result}")
 
 
 # When Bot is ready.
 @client.event
 async def on_ready():
-    await tree.sync(guild=discord.Object(id=guildId))
     print(Fore.CYAN + f"Successfully logged in as {client.user}")
     print("Packages and commands are loaded")
     print(Fore.GREEN + "-------------------")
     print(Fore.GREEN + f"Thanks for using Bob the Bot! {client.user} is now online")
 
 
-client.run(token)
+client.run('TOKEN')
