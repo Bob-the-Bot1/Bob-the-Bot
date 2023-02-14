@@ -325,4 +325,4 @@ async def on_ready():
     print(Fore.GREEN + f"Thanks for using Bob the Bot! {client.user} is now online")
 
 
-client.run('TOKEN')
+client.run('TOKEN') 
