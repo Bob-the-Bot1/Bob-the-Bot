@@ -363,7 +363,6 @@ async def cal(interaction):
 )
 async def search(interaction, query: str, engine: str):
     print(engine)  # Choice(name='Google', value='google')
-    engine = engine.value
     query = query.rstrip().replace(" ", "+")
     if engine == "google":
         await interaction.respond(f"https://google.com/search?q={query}")
