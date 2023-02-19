@@ -68,7 +68,7 @@ async def on_message(msg: discord.Message):
         if user_data[str(msg.author.id)]["xp"] >= level_up_xp:
             user_data[str(msg.author.id)]["level"] += 1
             if server_settings.get(str(msg.guild.id)) != None and server_settings[str(msg.guild.id)]['levelup_channel'] != None:
-                await discord.utils.get(msg.guild.channels, id=server_settings[ste(msg.guild.id)]['levelup_channel']).send(f'{msg.author.mention} just reached level {user_data[str(msg.author.id)]["level"]}!')
+                await discord.utils.get(msg.guild.channels, id=server_settings[str(msg.guild.id)]['levelup_channel']).send(f'{msg.author.mention} just reached level {user_data[str(msg.author.id)]["level"]}!')
             user_data[str(msg.author.id)]["xp"] = 0
 
         with open('levels.json', 'w') as file:
@@ -474,4 +474,4 @@ async def on_ready():
 
 
 client.run(
-    'TOKEN')
+'MTA1ODg1NDQ2Njk4MTQ2MjA5Ng.GQtLx9.7DfiaiuErxfvuUG3UfZ--l3DuVJPYQeARqc4ks')
