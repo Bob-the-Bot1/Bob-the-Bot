@@ -2,7 +2,6 @@
 
 import discord
 from discord.ext import commands
-
 from discord import Role
 from colorama import init, Fore, Back, Style
 import calendar
@@ -13,10 +12,11 @@ import bs4
 import json
 import math
 import asyncio
+from dotenv import load_dotenv
 import os
 
-
-guildId = 1037450276212318338
+load_dotenv()
+token = os.getenv("TOKEN")
 intents = discord.Intents.all()
 intents.members = True
 client = discord.Bot(intents=intents)
@@ -472,5 +472,4 @@ async def on_ready():
           f"Thanks for using Bob the Bot! {client.user} is now online")
 
 
-client.run(
-'TOKEN')
+client.run(token)
