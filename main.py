@@ -474,4 +474,4 @@ async def on_ready():
 
 
 client.run(
-'MTA1ODg1NDQ2Njk4MTQ2MjA5Ng.GQtLx9.7DfiaiuErxfvuUG3UfZ--l3DuVJPYQeARqc4ks')
+'TOKEN')
