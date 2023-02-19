@@ -472,4 +472,4 @@ async def on_ready():
           f"Thanks for using Bob the Bot! {client.user} is now online")
 
 
-client.run('TOKEN')
+client.run('token')
