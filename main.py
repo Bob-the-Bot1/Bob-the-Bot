@@ -370,6 +370,22 @@ async def search(interaction, query: str, engine: str):
         await interaction.respond(f"https://duckduckgo.com/?q={query}")
     elif engine == "bing":
         await interaction.respond(f"https://bing.com/search?q={query}")
+    elif engine == "baidu":
+        await interaction.respond(f"https://www.baidu.com/s?wd={query}")
+    elif engine == "aol":
+        await interaction.respond(f"https://search.aol.co.uk/aol/search?q={query}")
+    elif engine == "ask":
+        await interaction.respond(f"https://www.ask.com/web?q={query}")
+    elif engine == "excite":
+        await interaction.respond(f"https://results.excite.com/serp?q={query}")
+    elif engine == "wolfram":
+        await interaction.respond(f"https://www.wolframalpha.com/input?i={query}")
+    elif engine == "yandex":
+        await interaction.respond(f"https://yandex.com/search/?text={query}")
+    elif engine == "lycos":
+        await interaction.respond(f"https://search13.lycos.com/web/?q={query}")
+    elif engine == "yahoo":
+        await interaction.respond(f"https://search.yahoo.com/search?p={query}")
     elif engine == "letmegoogle":
         await interaction.respond(
             f"https://letmegooglethat.com/?q={query}"
