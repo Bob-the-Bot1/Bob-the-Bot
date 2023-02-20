@@ -14,7 +14,7 @@ A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryV
 # How to start
 1. Clone the repo
 2. Make sure you have all the packages installed by doing `pip install -r requirements.txt`
-3. Rename `.env.template` to `.env` and add your token and Guild ID
+3. Rename `.env.template` to `.env` and add your token
 4. Run `python main.py` and enjoy!
 
 
