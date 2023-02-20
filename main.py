@@ -374,8 +374,6 @@ async def search(interaction, query: str, engine: str):
         await interaction.respond(f"https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd={query}")
     elif engine == "aol":
         await interaction.respond(f"https://search.aol.co.uk/aol/search?q={query}")
-    elif engine == "bing":
-        await interaction.respond(f"https://bing.com/search?q={query}")
     elif engine == "ask":
         await interaction.respond(f"https://www.ask.com/web?q={query}")
     elif engine == "excite":
