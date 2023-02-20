@@ -385,7 +385,7 @@ async def search(interaction, query: str, engine: str):
     elif engine == "lycos":
         await interaction.respond(f"https://search13.lycos.com/web/?q={query}")
     elif engine == "yahoo":
-        await interaction.respond(f"https://search.yahoo.com/search;_ylt=Awr.Qpo5sPJj0CwvOY1LBQx.;_ylc=X1MDMjExNDcxNzAwMwRfcgMyBGZyA3NmcARmcjIDc2ItdG9wBGdwcmlkA2RYZWc2R3JVUkxTT19rcF9qdDY1ZkEEbl9yc2x0AzAEbl9zdWdnAzEwBG9yaWdpbgN1ay5zZWFyY2gueWFob28uY29tBHBvcwMwBHBxc3RyAwRwcXN0cmwDMARxc3RybAMxMARxdWVyeQNXaW5kb3dzJTIwMTEEdF9zdG1wAzE2NzY4NDkyMTg-?p={query}&fr2=sb-top&fr=sfp")
+        await interaction.respond(f"https://search.yahoo.com/search?p={query}")
     elif engine == "letmegoogle":
         await interaction.respond(
             f"https://letmegooglethat.com/?q={query}"
