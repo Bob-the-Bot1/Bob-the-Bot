@@ -382,6 +382,12 @@ async def search(interaction, query: str, engine: str):
         await interaction.respond(f"https://www.wolframalpha.com/input?i={query}")
     elif engine == "yandex":
         await interaction.respond(f"https://yandex.com/search/?text={query}")
+    elif engine == "github":
+        await interaction.respond(f"https://github.com/search?q={query}")
+    elif engine == "stackoverflow":
+        await interaction.respond(f"https://stackoverflow.com/search?q={query}")
+    elif engine == "youtube":
+        await interaction.respond(f"https://www.youtube.com/results?search_query={query}")
     elif engine == "lycos":
         await interaction.respond(f"https://search13.lycos.com/web/?q={query}")
     elif engine == "yahoo":
