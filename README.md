@@ -1,5 +1,5 @@
 # Bob the Bot
-A Discord bot for ExplodeCode's server. Join [here](https://discord.gg/jWS24SryVx)
+Join our support server. Join [here](https://discord.gg/d9knK9auSA)
 
 ## Developers
 
