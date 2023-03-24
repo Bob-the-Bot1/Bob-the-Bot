@@ -1,5 +1,5 @@
 # Bob the Bot
-Join our support server. Join [here](https://discord.gg/d9knK9auSA)
+[Join our support server](https://discord.gg/d9knK9auSA)
 
 ## Developers
 
@@ -10,13 +10,15 @@ Join our support server. Join [here](https://discord.gg/d9knK9auSA)
 - [Cattopy The Web](https://github.com/MesVisiDraugai) - Developer
 - [lukemccrea](https://github.com/lukemccrea) - Developer
 ## Thanks to
-- [zehayk](https://github.com/zehayk) - Auther of the Birthday functions code
+- [zehayk](https://github.com/zehayk) - Author of the Birthday functions code
 
 # How to start
-1. Clone the repo
-2. Make sure you have all the packages installed by doing `pip install -r requirements.txt`
-3. Rename `.env.template` to `.env` and add your token
-4. Run `python main.py` and enjoy!
+1. Clone the repo<br>
+`git clone https://github.com/ExplodeC0de/Bob-the-Bot.git`
+3. Make sure you have all the packages installed<br>
+`pip install -r requirements.txt`
+5. Rename `.env.template` to `.env` and add your token
+6. Run `python main.py` and enjoy!
 
 
 # Notes:
