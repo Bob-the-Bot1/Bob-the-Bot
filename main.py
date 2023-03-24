@@ -43,18 +43,18 @@ async def on_command_error(context, error):
   if isinstance(error, commands.MissingRequiredArgument):
     await context.send("Oh no! Looks like you have missed out an argument for this command.")
   elif isinstance(error, commands.MissingPermissions):
-    await context.send("Oh no! Looks like you Dont have the permissions for this command.")
+    await context.send("Oh no! Looks like you don't have the permissions for this command.")
   elif isinstance(error, commands.MissingRole):
     # bot errors
-    await context.send("Oh no! Looks like you Dont have the roles for this command.")
+    await context.send("Oh no! Looks like you don't have the roles for this command.")
   elif isinstance(error, commands.BotMissingPermissions):
-    await context.send("Oh no! Looks like I Dont have the permissions for this command.")
+    await context.send("Oh no! Looks like I don't have the permissions for this command.")
   elif isinstance(error, commands.BotMissingRole):
-    await context.send("Oh no! Looks like I Dont have the roles for this command.")
+    await context.send("Oh no! Looks like I don't have the roles for this command.")
   elif isinstance(error, commands.CommandNotFound):
     await context.send(f" :warning: {error}.")
   elif isinstance(error, commands.MemberNotFound):
-    await context.send("Please specify the member correctly!!!!!!")
+    await context.send("Please specify the member correctly!")
   else:
     raise error
 
@@ -364,40 +364,42 @@ async def cal(interaction):
 async def search(interaction, query: str, engine: str):
     print(engine)  # Choice(name='Google', value='google')
     query = query.rstrip().replace(" ", "+")
-    if engine == "google":
-        await interaction.respond(f"https://google.com/search?q={query}")
-    elif engine == "duckduckgo":
-        await interaction.respond(f"https://duckduckgo.com/?q={query}")
-    elif engine == "bing":
-        await interaction.respond(f"https://bing.com/search?q={query}")
-    elif engine == "baidu":
-        await interaction.respond(f"https://www.baidu.com/s?wd={query}")
-    elif engine == "aol":
-        await interaction.respond(f"https://search.aol.co.uk/aol/search?q={query}")
-    elif engine == "ask":
-        await interaction.respond(f"https://www.ask.com/web?q={query}")
-    elif engine == "excite":
-        await interaction.respond(f"https://results.excite.com/serp?q={query}")
-    elif engine == "wolfram":
-        await interaction.respond(f"https://www.wolframalpha.com/input?i={query}")
-    elif engine == "yandex":
-        await interaction.respond(f"https://yandex.com/search/?text={query}")
-    elif engine == "github":
-        await interaction.respond(f"https://github.com/search?q={query}")
-    elif engine == "stackoverflow":
-        await interaction.respond(f"https://stackoverflow.com/search?q={query}")
-    elif engine == "youtube":
-        await interaction.respond(f"https://www.youtube.com/results?search_query={query}")
-    elif engine == "lycos":
-        await interaction.respond(f"https://search13.lycos.com/web/?q={query}")
-    elif engine == "yahoo":
-        await interaction.respond(f"https://search.yahoo.com/search?p={query}")
-    elif engine == "letmegoogle":
-        await interaction.respond(
-            f"https://letmegooglethat.com/?q={query}"
-        )
-    else:
-        await interaction.respond("Invalid engine.")
+
+    match engine:
+    	case "google":
+    	    await interaction.respond(f"https://google.com/search?q={query}")
+    	case "duckduckgo":
+    	    await interaction.respond(f"https://duckduckgo.com/?q={query}")
+    	case "bing":
+    	    await interaction.respond(f"https://bing.com/search?q={query}")
+    	case "baidu":
+    	    await interaction.respond(f"https://www.baidu.com/s?wd={query}")
+    	case "aol":
+    	    await interaction.respond(f"https://search.aol.co.uk/aol/search?q={query}")
+    	case "ask":
+    	    await interaction.respond(f"https://www.ask.com/web?q={query}")
+    	case "excite":
+    	    await interaction.respond(f"https://results.excite.com/serp?q={query}")
+    	case "wolfram":
+    	    await interaction.respond(f"https://www.wolframalpha.com/input?i={query}")
+    	case "yandex":
+    	    await interaction.respond(f"https://yandex.com/search/?text={query}")
+    	case "github":
+    	    await interaction.respond(f"https://github.com/search?q={query}")
+    	case "stackoverflow":
+    	    await interaction.respond(f"https://stackoverflow.com/search?q={query}")
+    	case "youtube":
+    	    await interaction.respond(f"https://www.youtube.com/results?search_query={query}")
+    	case "lycos":
+    	    await interaction.respond(f"https://search13.lycos.com/web/?q={query}")
+    	case "yahoo":
+    	    await interaction.respond(f"https://search.yahoo.com/search?p={query}")
+    	case "letmegoogle":
+    	    await interaction.respond(
+    	        f"https://letmegooglethat.com/?q={query}"
+    	    )
+    	case _:
+    	    await interaction.respond("Invalid engine.")
 
 
 # 8ball command
@@ -465,21 +467,22 @@ async def calc(interaction, problem: str):
     # Get the second number from the message
     number2 = float(words[2])
     # Perform the requested operation
-    if operation == "+":
-        result = number1 + number2
-    elif operation == "-":
-        result = number1 - number2
-    elif operation == "*":
-        result = number1 * number2
-    elif operation == "/":
-        if number2 == 0:
-            await interaction.respond("Error: Cannot divide by zero.")
-            return
-        result = number1 / number2
 
-    else:
-        await interaction.respond("Invalid operation. Use +, -, *, or /.")
-        return
+    match operation:
+    	case "+":
+    	    result = number1 + number2
+    	case "-":
+    	    result = number1 - number2
+    	case "*":
+    	    result = number1 * number2
+    	case "/":
+    	    if number2 == 0:
+    	        await interaction.respond("Error: Cannot divide by zero.")
+    	        return
+    	    result = number1 / number2
+    	case _:
+    	    await interaction.respond("Invalid operation. Use +, -, *, or /.")
+    	    return
     # Send the result to the channel
     await interaction.respond(f"Result: {result}")
 
