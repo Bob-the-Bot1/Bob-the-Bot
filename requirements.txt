@@ -1,0 +1,6 @@
+humanfriendly==10.0
+requests==2.28.1
+colorama==0.4.5
+discord.py==2.1.1
+python-dotenv==0.21.1
+py-cord==2.3.0

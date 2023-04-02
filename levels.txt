@@ -1,0 +1,31 @@
+import sqlite3
+
+
+conn = sqlite3.connect('leveling.db')
+c = conn.cursor()
+
+# create the table for storing user levels
+c.execute('''CREATE TABLE IF NOT EXISTS levels
+             (id INTEGER PRIMARY KEY, guild_id INTEGER, user_id INTEGER, xp INTEGER, level INTEGER)''')
+
+# define a function to get the user's current level and XP
+def get_level(user_id, guild_id):
+    c.execute("SELECT xp, level FROM levels WHERE user_id = ? AND guild_id = ?", (user_id, guild_id))
+    result = c.fetchone()
+    if result is None:
+        return (0, 0)
+    else:
+        return result
+
+# define a function to update the user's XP and level
+def update_level(user_id, guild_id, xp):
+    current_xp, current_level = get_level(user_id, guild_id)
+    new_xp = current_xp + xp
+    new_level = int(((new_xp // 50) ** 0.5) + 1)
+    c.execute("INSERT OR REPLACE INTO levels (guild_id, user_id, xp, level) VALUES (?, ?, ?, ?)", (guild_id, user_id, new_xp, new_level))
+    conn.commit()
+
+def get_all_level(server_id):
+    c.execute("SELECT user_id, xp, level FROM levels WHERE guild_id = ? ORDER BY xp DESC LIMIT 10", (server_id,))
+    results = c.fetchall()
+    return results
