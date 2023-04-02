@@ -26,30 +26,7 @@ import configs
 import random
 import warningsget
 from discord.ext import tasks
-# from pytz import timezone
-# from dotenv import load_dotenv
-# from os import getenv
 
-# load_dotenv()
-
-# with open("config.json", mode="r") as config_file:
-#     config = json.load(config_file)
-
-# BOT_TOKEN = getenv("DISCORD_BOT_TOKEN")
-# BOT_PREFIX = config["prefix"]
-
-# GUILD_ID = config["guild_id"] #Server ID
-# TICKET_CHANNEL = config["ticket_channel_id"] #Where the bot should send the Embed + SelectMenu
-
-# CATEGORY_ID1 = config["category_id_1"] #Support1 Channel
-# CATEGORY_ID2 = config["category_id_2"] #Support2 Channel
-
-# TEAM_ROLE1 = config["team_role_id_1"] #Permissions for Support1
-# TEAM_ROLE2 = config["team_role_id_1"] #Permissions for Support2
-
-# LOG_CHANNEL = config["log_channel_id"] #Log Channel
-
-# channel_ids = {}
 
 leveling_db = sqlite3.connect("expData.db")
 leveling_cursor = leveling_db.cursor()
@@ -62,13 +39,6 @@ leveling_cursor = leveling_db.cursor()
 @tasks.loop(seconds=5.0)
 async def updateit():
     await update_status()
-
-
-
-
-
-
-
 
 # bot = discord.Bot(intents = discord.Intents.all())
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("b?"), intents=discord.Intents.all(), case_insensitive = True)
