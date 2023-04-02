@@ -17,8 +17,8 @@
 `git clone https://github.com/ExplodeC0de/Bob-the-Bot.git`
 3. Make sure you have all the packages installed<br>
 `pip install -r requirements.txt`
-5. Rename `.env.template` to `.env` and add your token
-6. Run `python main.py` and enjoy!
+5. Goto `configs.py` and insert your bot token there.
+6. Run `main.py` file and you are all set to go!
 
 
 # Notes:
