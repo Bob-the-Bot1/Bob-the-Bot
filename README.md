@@ -3,10 +3,10 @@
 
 ## Developers
 
-- [ExplodeC0de](https://github.com/ExplodeC0de) - Lead Developer 
-- [csdaniel](https://github.com/csd4ni3l) - Lead Developer
-- [OpenSourceSimon](https://github.com/OpenSourceSimon) - Lead Developer
-- [Coder DO as Impossible](https://github.com/SNV-008) - Lead Developer 
+- [ExplodeC0de](https://github.com/ExplodeC0de) - Developer/Bot owner 
+- [csdaniel](https://github.com/csd4ni3l) - Developer/Hosting Manager
+- [OpenSourceSimon](https://github.com/OpenSourceSimon) - Developer
+- [Coder DO as Impossible](https://github.com/SNV-008) - Developer 
 - [Cattopy The Web](https://github.com/MesVisiDraugai) - Developer
 - [lukemccrea](https://github.com/lukemccrea) - Developer
 ## Thanks to
