@@ -9,8 +9,7 @@
 - [Coder DO as Impossible](https://github.com/SNV-008) - Developer 
 - [Cattopy The Web](https://github.com/MesVisiDraugai) - Developer
 - [lukemccrea](https://github.com/lukemccrea) - Developer
-## Thanks to
-- [zehayk](https://github.com/zehayk) - Author of the Birthday functions code
+
 
 # How to start
 1. Clone the repo<br>
