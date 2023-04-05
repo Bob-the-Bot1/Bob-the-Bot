@@ -5,8 +5,8 @@
 
 - [ExplodeC0de](https://github.com/ExplodeC0de) - Developer/Bot owner 
 - [csdaniel](https://github.com/csd4ni3l) - Developer/Hosting Manager
+- [Coder DO as Impossible](https://github.com/SNV-008) - Lead Developer 
 - [OpenSourceSimon](https://github.com/OpenSourceSimon) - Developer
-- [Coder DO as Impossible](https://github.com/SNV-008) - Developer 
 - [Cattopy The Web](https://github.com/MesVisiDraugai) - Developer
 - [lukemccrea](https://github.com/lukemccrea) - Developer
 
