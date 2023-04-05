@@ -9,7 +9,7 @@ import asyncio
 import colorama
 import humanfriendly
 import time
-import aiosqlite
+#import aiosqlite
 import sqlite3
 # import logging
 from discord.ui import *
@@ -27,7 +27,6 @@ import random
 import warningsget
 from discord.ext import tasks
 
-
 leveling_db = sqlite3.connect("expData.db")
 leveling_cursor = leveling_db.cursor()
 
@@ -40,15 +39,19 @@ leveling_cursor = leveling_db.cursor()
 async def updateit():
     await update_status()
 
-# bot = discord.Bot(intents = discord.Intents.all())
+
+
+
+
+
+
+
+#bot = discord.Bot(intents = discord.Intents.all())
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("b?"), intents=discord.Intents.all(), case_insensitive = True)
 
 client = bot
 level_multiplier = 5
-# bot.loop.create_task(botdb())
-# botdb()
 
-# bot.remove_command('help')
 @bot.event
 async def on_guild_join(guild:discord.Guild):
     setup_channels.check_whether_if(guild.id)
@@ -63,26 +66,15 @@ async def on_ready():
   leveling_cursor.execute('''CREATE TABLE IF NOT EXISTS users
              (server_id INTEGER, user_id INTEGER, xp INTEGER, level INTEGER, PRIMARY KEY (server_id, user_id))''')
   leveling_db.commit()
-  # bot.add_view(MyView())
-  # bot.add_view(delete())
   for guild in bot.guilds:
      setup_channels.check_whether_if(guild.id)
      level_rewards.check_whether_if(guild.id)
-  # for guild in bot.guilds:
-    # setup_channels.join_or_none(guild.id)
-  # conn = sqlite3.connect("expData.db")
-  # cur = conn.cursor()
-  # conn.commit()
-  # cur.execute("CREATE TABLE IF NOT EXISTS guildData (guild_id int, user_id int, exp int, PRIMARY KEY (guild_id, user_id))")
   updateit.start()
   print(colorama.Fore.BLUE+f"We have logged into {client.user}!")
   print(colorama.Fore.RED+'We have logged in as {0.user}'.format(bot))
   print(colorama.Fore.YELLOW)
 
 
-# @client.event
-# async def on_guild_join(guild):
-#    setup_channels.join_or_none(guild.id)
 
 
 
@@ -146,33 +138,6 @@ async def on_message(message:discord.Message):
 
 
 
-# @client.event
-# async def on_user_update(bef, aftr):
-#   for guild in bef.guilds:
-#     member = bot.get_guild(guild.id).get_member(bef.id)
-#   for guilds in bot.guilds:
-#     for members in guilds.members:
-#       if members.id == aftr.id:
-#          pass
-#         # modlog = discord.utils.get(members.guild.text_channels, name=configs.MOD_LOG_CHANNEL_NAME)
-#   embed = Embed(title="User credentials changed", timestamp=datetime.datetime.utcnow())
-#   if bef.avatar != aftr.avatar:
-#     embed.add_field(name="Avatar changed", value="", inline=False)
-#     e2 = Embed(title="Old avatar")
-#     e2.set_author(name=member.name, icon_url=bef.avatar)
-#     e2.set_thumbnail(url=bef.avatar)
-#     e3 = Embed(title="New Avatar")
-#     e3.set_author(name=member.name, icon_url=aftr.avatar)
-#     e3.set_thumbnail(url=aftr.avatar)
-#     eall = []
-#     eall.append(embed)
-#     eall.append(e2)
-#     eall.append(e3)
-#   elif bef.display_name != aftr.display_name:
-#     embed.add_field(name="Username changed", value="", inline=False)
-#     embed.add_field(name="Old username", value=f"{bef.display_name}", inline=False)
-#     embed.add_field(name="New Username", value=f"{aftr.display_name}", inline=False)
-#   # await modlog.send(embed=embed)
 
 
 @client.event
@@ -267,32 +232,6 @@ async def post_modlog(guild:discord.Guild, type, user:discord.User, target:disco
     x = cases.add_case(target.id, type, reason, user.id, datetime.datetime.utcnow(), guild)
     await log_case2(guild, (x, target.id, type, reason, user.id, datetime.datetime.utcnow()))
   
-# async def edit_reason(msg):
-#     await msg.delete()
-#     pmsg = msg.content.replace(".reason ", "")
-#     if not " " in pmsg:
-#         return
-#     caseid = pmsg.split(" ")[0]
-#     if not caseid.isdigit():
-#         return
-#     new_reason = " ".join(pmsg.split(" ")[1:])
-#     fnd_msg = None
-#     async for s in msg.channel.history(limit = 500):
-#         if s.author.id != client.user.id:
-#             continue
-#         if not s.embeds:
-#             continue
-#         if s.embeds[0].author.name.endswith(f" | Case {caseid}"):
-#             fnd_msg = s
-#             break
-#     if not fnd_msg:
-#         return
-#     fnd_em = fnd_msg.embeds[0]
-#     fnd_em.set_field_at(2, name = "Reason", value = new_reason, inline = False)
-#     await fnd_msg.edit(embed = fnd_em)
-# Define the amount of XP needed to level up
-
-
 
 
 
@@ -446,7 +385,7 @@ async def kick(ctx : discord.Interaction, member: discord.Member, *, reason='No 
         await member.send(embed=user_embed)
         await member.kick(reason=reason)
         await ctx.response.send_message(embed=conf_embed)
-        # await ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild.id, "logging")).send(embed=conf_embed2)
+        # await ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild, "logging")).send(embed=conf_embed2)
         case_id = cases.add_case(member.id, "kick", reason, ctx.user.id, datetime.datetime.utcnow(), ctx.guild.id)
         await log_case(ctx, (case_id, member.id, "kick", reason, ctx.user.id, datetime.datetime.utcnow()))
       except discord.Forbidden:
@@ -561,7 +500,7 @@ async def log_all(ctx:discord.Interaction):
     cur = conn.cursor()
     cur.execute("SELECT * FROM moderation_cases WHERE guild = ?", (ctx.guild.id))
     data = cur.fetchall()
-    channelid = setup_channels.get_channel_id(ctx.guild.id, "logging")
+    channelid = setup_channels.get_channel_id(ctx.guild, "logging")
     channel = ctx.guild.get_channel(channelid)
 
 
@@ -576,11 +515,11 @@ async def rmwarn(ctx : discord.Interaction ,*,id_of_warn):
   db.commit()
   user = ctx.guild.get_member(warning[1])
   embed = Embed(title=f"Warning deleted | Code: {id_of_warn} ", description=f"Warning given by <@{warning[3]}>, for Reason {warning[4]}. Warning was given to {user.mention}")
-  mod = ctx.guild.get_member(id={warning[3]})
+  mod = ctx.guild.get_member(warning[3])
   embed.set_author(name=user.display_name, icon_url=user.avatar or mod.avatar)
   embed.set_thumbnail(url=user.avatar)
   await ctx.response.send_message(embed=embed)
-  await ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild.id, "logging")).send(embed=embed)
+  await ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild, "logging")).send(embed=embed)
 
 @bot.slash_command(name="time", description="Get your local time.")
 # @app_commands.guilds(discord.Object(id=guild_id))
@@ -642,7 +581,7 @@ async def purge(ctx : discord.Interaction,amount : int = 2):
   await ctx.channel.purge(limit=amount+1)
   await ctx.response.send_message(f"Deleted `{amount}` message(s) in channel <#{ctx.channel.id}> by  Moderator {ctx.user.mention}")
   #await log_channel.send(embed = e)
-  log_Channel = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild.id, "logging"))
+  log_Channel = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild, "logging"))
   await log_Channel.send(embed=e)
 
 
@@ -739,7 +678,7 @@ async def giverole(ctx:discord.Interaction, member: discord.Member, *, role: dis
     conf_embed.set_thumbnail(url=member.avatar)
     await member.add_roles(role, reason="No reason")
     await ctx.response.send_message(embed=conf_embed)
-    modlog = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild.id, "logging"))
+    modlog = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild, "logging"))
     modlog = modlog or ctx.channel
     await modlog.send(embed=conf_embed)
 
@@ -761,10 +700,10 @@ async def removerole(ctx:discord.Interaction, member: discord.Member, *, role: d
     conf_embed.add_field(name="Subject: ", value=f"{member.mention}", inline=False)
     conf_embed.set_author(name=f"{member.name}", icon_url=member.avatar)
     conf_embed.set_thumbnail(url=member.avatar)
-    await ctx.response.send_message(f'Assigning **{role}** role to {member.mention}')
+    await ctx.response.send_message(f'Removing **{role}** role from {member.mention}')
     await member.remove_roles(role)
-    await ctx.response.send_message(embed=conf_embed)
-    modlog = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild.id, "logging"))
+    await ctx.followup.send(embed=conf_embed)
+    modlog = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild, "logging"))
     modlog = modlog or ctx.channel
     await modlog.send(embed=conf_embed)
 
@@ -803,7 +742,7 @@ async def cal(interaction:discord.Interaction):
 # @app_commands.guilds(discord.Object(id=guild_id))
 @commands.has_permissions(manage_channels=True)
 async def lock(ctx,time:str=None, role:discord.Role=None, channel: discord.TextChannel=None):
-  modlog = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild.id, "logging"))
+  modlog = ctx.guild.get_channel(setup_channels.get_channel_id(ctx.guild, "logging"))
   role = role or ctx.guild.default_role
   channel = channel or ctx.channel
   # count = case_id()
@@ -840,32 +779,6 @@ async def lock(ctx,time:str=None, role:discord.Role=None, channel: discord.TextC
   overwrite = channel.overwrites_for(role)
   overwrite.send_messages = False
   await channel.set_permissions(role, overwrite=overwrite)
-
-# @bot.slash_command(name="unlock", with_app_command=True, description="Unlocks a locked channel")
-# @app_commands.guilds(discord.Object(id=guild_id))
-# @commands.has_permissions(manage_channels=True)
-# async def unlock(ctx, role:discord.Role=None, channel: discord.TextChannel=None):
-#   modlog = discord.utils.get(ctx.guild.text_channels, name = configs.MOD_LOG_CHANNEL_NAME)
-#   role = role or ctx.guild.default_role
-#   channel = channel or ctx.channel
-#   x = case_id()
-#   async with ctx.typing():
-#     await ctx.channel.purge(limit=1)
-#     overwrite = channel.overwrites_for(role)
-#     overwrite.send_messages = True
-#     await channel.set_permissions(role, overwrite=overwrite)
-#     unlock_embed = discord.Embed(
-#     title= (f"UNLOCKED | Case {x}"),
-#     description= (f"**{channel.mention}** HAS BEEN UNLOCKED FOR **{role}**"),
-#     colour=0x00FFF5,
-#     )        
-#     unlock_embed.set_footer(text=ctx.user.name, icon_url=ctx.user.avatar)
-#     unlock_embed.set_author(name=client.user.name, icon_url=client.user.avatar)
-#     unlock_embed.set_thumbnail(url=ctx.guild.icon)    
-#     await channel.send(embed=unlock_embed, delete_after=60)
-#     asyncio.sleep(1)
-#     await modlog.send("Done!!")
-#     await modlog.send(embed=unlock_embed)
 
 
 
@@ -950,14 +863,7 @@ async def hello(interaction:discord.Interaction):
     await interaction.response.send_message(f"{random.choice(greetings)} {username}!")
 
 
-# @bot.command()
-# async def hello2(ctx):
-#   greetings = ["Hello", "Hi", "Greetings", "Hola", "Bonjour", "Konnichiwa", "Namaste", "Aaram Ri"]
-#   username = ctx.author.name
-#   await ctx.send(f"{random.choice(greetings)} {username}!")
 
-
-# bot.add_command(hello2)
 
 @client.slash_command(
     name="search", description="Search the internet."
@@ -1118,100 +1024,6 @@ async def wouldyourather(interaction:discord.Interaction):
                  "Would you rather have a sumo wrestler on top of you or yourself on top of him?"]
     username = interaction.user.mention
     await interaction.response.send_message(f"{username}! {random.choice(questions)}")
-    # emma = await interaction.guild.create_text_channel()
-    # emma.over
-
-# tictactoe command
-# @client.slash_command(name="tictactoe", description="Play Tic Tac Toe against AI or a user.")
-# async def tictactoe(interaction:discord.Interaction):
-#     # Initialize the board
-#     board = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
-
-#     # Define the function to check if a player has won
-#     def check_win(player):
-#         return ((board[0] == player and board[1] == player and board[2] == player) or
-#                 (board[3] == player and board[4] == player and board[5] == player) or
-#                 (board[6] == player and board[7] == player and board[8] == player) or
-#                 (board[0] == player and board[3] == player and board[6] == player) or
-#                 (board[1] == player and board[4] == player and board[7] == player) or
-#                 (board[2] == player and board[5] == player and board[8] == player) or
-#                 (board[0] == player and board[4] == player and board[8] == player) or
-#                 (board[2] == player and board[4] == player and board[6] == player))
-
-#     # Define the function to display the board
-#     def display_board():
-#         return (f"```\n {board[0]} | {board[1]} | {board[2]}\n"
-#                 f"---+---+---\n"
-#                 f" {board[3]} | {board[4]} | {board[5]}\n"
-#                 f"---+---+---\n"
-#                 f" {board[6]} | {board[7]} | {board[8]}\n```")
-
-#     # Define the function to make a move
-#     async def make_move(player, move):
-#         if board[move - 1] in ["❌", "⭕"]:
-#             await interaction.response.send_message("That spot is already taken. Try again.")
-#             return False
-#         else:
-#             board[move - 1] = player
-#             await interaction.response.send_message(display_board())
-#             if check_win(player):
-#                 await interaction.response.send_message(f"{player} wins!")
-#                 return True
-#             elif all([spot in ["❌", "⭕"] for spot in board]):
-#                 await interaction.response.send_message("It's a tie!")
-#                 return True
-#             else:
-#                 return False
-
-#     # Define the function for the AI's move
-#     def ai_move():
-#         available_moves = [i for i in range(1, 10) if board[i-1] not in ["❌", "⭕"]]
-#         return random.choice(available_moves)
-
-#     # Start the game
-#     await interaction.response.send_message("Let's play Tic Tac Toe! Who do you want to play against?")
-#     ai = False
-#     user = interaction.author
-#     players = ["❌", "⭕"]
-#     while True:
-#         # Choose the player
-#         player = players[0]
-#         players.reverse()
-#         # Make the move
-#         if user == interaction.author:
-#             message = await interaction.response.send_message(f"Which spot do you want to place {player}?{display_board()} Reply with a number from 1 to 9 to make your move.")
-#             try:
-#                 move = await client.wait_for("message", check=lambda m: m.author == user and m.content.isdigit(),
-#                                              timeout=30)
-#             except asyncio.TimeoutError:
-#                 await interaction.response.send_message(f"{user.mention}, you took too long to make your move. Game over!")
-#                 break
-#             if await make_move(player, int(move.content)):
-#                 break
-#             else:
-#                 move = ai_move()
-#                 await asyncio.sleep(1)
-#                 await interaction.response.edit_message(f"The AI has made its move:")
-#                 await asyncio.sleep(1)
-#                 if await make_move(player, move):
-#                     break
-#                 # Ask if the players want to play again
-#             await interaction.response.send_message("Do you want to play again? (y/n)")
-#             try:
-#                 play_again = await client.wait_for("message",
-#                                                    check=lambda m: m.author == user and m.content.lower() in ["y", "n"],
-#                                                    timeout=30)
-#             except asyncio.TimeoutError:
-#                 await interaction.response.send_message("Game over!")
-#                 break
-#             if play_again.content.lower() == "y":
-#                 board = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
-#                 await interaction.response.send_message("Starting a new game. Who do you want to play against?")
-#                 ai = False
-#                 players = ["❌", "⭕"]
-#             else:
-#                 await interaction.response.send_message("Thanks for playing! Game over.")
-#                 break
 
 
 async def log_case(ctx, case):
@@ -1237,13 +1049,6 @@ async def log_case2(guild, case):
 
 
 
-
-
-# @bot.slash_command(name="set_reward", description="Set rewards for certain levels!!")
-# async def set_reward(ctx:discord.Interaction, level:int, rewardrole : discord.Role):
-#     reward_id = rewardrole.id
-#     leveling_systems[ctx.guild.id] = RoleAward(role_id=reward_id, level_requirement=level)
-#     await ctx.response.send_message(f"Successfully set {level} level reward to {reward_id} role.")
 
 
 
@@ -1349,145 +1154,6 @@ async def resetxp(ctx:discord.Interaction):
 
 
 
-
-
-
-
-
-
-# class MyView(discord.ui.View):
-#     def __init__(self):
-#         super().__init__(timeout=None)
-
-#     @discord.ui.select(
-#         custom_id="support",
-#         placeholder="Choose a Ticket option",
-#         options=[
-#             discord.SelectOption(
-#                 label="Support1",
-#                 emoji="❓",
-#                 value="support1"
-#             ),
-#             discord.SelectOption(
-#                 label="Support2",
-#                 emoji="❓",
-#                 value="support2"
-#             )
-#         ]
-#     )
-#     async def callback(self, select, interaction):
-#         if "support1" in interaction.data['values']:
-#             if interaction.channel.id == TICKET_CHANNEL:
-#                 guild = bot.get_guild(GUILD_ID)
-#                 for ticket in guild.channels:
-#                     if str(interaction.user.id) in ticket.name:
-#                         embed = discord.Embed(title=f"You can only open one Ticket!", description=f"Here is your opend Ticket --> {ticket.mention}", color=0xff0000)
-#                         await interaction.response.send_message(embed=embed, ephemeral=True)
-#                         await asyncio.sleep(3)
-#                         embed = discord.Embed(title="Support-Tickets", color=discord.colour.Color.blue())
-#                         await interaction.message.edit(embed=embed, view=MyView())
-#                         return
-#                 category = bot.get_channel(CATEGORY_ID1)
-#                 ticket_channel = await guild.create_text_channel(f"ticket-{interaction.user.id}", category=category,
-#                                                                 topic=f"Ticket from {interaction.user} \nUser-ID: {interaction.user.id}")
-
-#                 await ticket_channel.set_permissions(guild.get_role(TEAM_ROLE1), send_messages=True, read_messages=True, add_reactions=False,
-#                                                     embed_links=True, attach_files=True, read_message_history=True,
-#                                                     external_emojis=True)
-#                 await ticket_channel.set_permissions(interaction.user, send_messages=True, read_messages=True, add_reactions=False,
-#                                                     embed_links=True, attach_files=True, read_message_history=True,
-#                                                     external_emojis=True)
-#                 await ticket_channel.set_permissions(guild.default_role, send_messages=False, read_messages=False, view_channel=False)
-#                 embed = discord.Embed(description=f'Welcome {interaction.user.mention}!\n'
-#                                                    'Type something here',
-#                                                 color=discord.colour.Color.blue())
-#                 await ticket_channel.send(embed=embed, view=delete())
-
-#                 embed = discord.Embed(description=f'📬 Ticket was Created! Look here --> {ticket_channel.mention}',
-#                                         color=discord.colour.Color.green())
-#                 await interaction.response.send_message(embed=embed, ephemeral=True)
-#                 await asyncio.sleep(3)
-#                 embed = discord.Embed(title="Support-Tickets", color=discord.colour.Color.blue())
-#                 await interaction.message.edit(embed=embed, view=MyView())
-#                 return
-#         if "support2" in interaction.data['values']:
-#             if interaction.channel.id == TICKET_CHANNEL:
-#                 guild = bot.get_guild(GUILD_ID)
-#                 for ticket in guild.channels:
-#                     if str(interaction.user.id) in ticket.name:
-#                         embed = discord.Embed(title=f"You can only open one Ticket", description=f"Here is your opend Ticket --> {ticket.mention}", color=0xff0000)
-#                         await interaction.response.send_message(embed=embed, ephemeral=True)
-#                         await asyncio.sleep(3)
-#                         embed = discord.Embed(title="Support-Tickets", color=discord.colour.Color.blue())
-#                         await interaction.message.edit(embed=embed, view=MyView())
-#                         return 
-#                 category = bot.get_channel(CATEGORY_ID2)
-#                 ticket_channel = await guild.create_text_channel(f"ticket-{interaction.user.id}", category=category,
-#                                                                     topic=f"Ticket from {interaction.user} \nUser-ID: {interaction.user.id}")
-#                 await ticket_channel.set_permissions(guild.get_role(TEAM_ROLE2), send_messages=True, read_messages=True, add_reactions=False,
-#                                                         embed_links=True, attach_files=True, read_message_history=True,
-#                                                         external_emojis=True)
-#                 await ticket_channel.set_permissions(interaction.user, send_messages=True, read_messages=True, add_reactions=False,
-#                                                         embed_links=True, attach_files=True, read_message_history=True,
-#                                                         external_emojis=True)
-#                 await ticket_channel.set_permissions(guild.default_role, send_messages=False, read_messages=False, view_channel=False)
-#                 embed = discord.Embed(description=f'Welcome {interaction.user.mention}!\n'
-#                                                    'Type something here',
-#                                                     color=discord.colour.Color.blue())
-#                 await ticket_channel.send(embed=embed, view=delete())
-
-#                 embed = discord.Embed(description=f'📬 Ticket was Created! Look here --> {ticket_channel.mention}',
-#                                         color=discord.colour.Color.green())
-#                 await interaction.response.send_message(embed=embed, ephemeral=True)
-
-#                 await asyncio.sleep(3)
-#                 embed = discord.Embed(title="Support-Tickets", color=discord.colour.Color.blue())
-#                 await interaction.message.edit(embed=embed, view=MyView())
-#         return
-
-# class delete(discord.ui.View):
-#     def __init__(self):
-#         super().__init__(timeout=None)
-
-#     @discord.ui.button(label="Close Ticket 🎫", style = discord.ButtonStyle.red, custom_id="close")
-#     async def close(self, button: discord.ui.Button, interaction: discord.Interaction):
-#         channel = bot.get_channel(LOG_CHANNEL)
-
-#         fileName = f"{interaction.channel.name}.txt"
-#         with open(fileName, "w") as file:
-#             async for msg in interaction.channel.history(limit=None, oldest_first=True):
-#                 time = msg.created_at.replace(tzinfo=timezone('UTC')).astimezone(timezone('Europe/Berlin'))
-#                 file.write(f"{time} - {msg.author.display_name}: {msg.clean_content}\n")
-
-#         embed = discord.Embed(
-#                 description=f'Ticket is closing in 5Sec.',
-#                 color=0xff0000)
-#         embed2 = discord.Embed(title="Ticket Closed!", description=f"Ticket-Name: {interaction.channel.name}\n Closed-From: {interaction.user.name}\n Transcript: ", color=discord.colour.Color.blue())
-#         file = discord.File(fileName)
-#         await channel.send(embed=embed2)
-#         await asyncio.sleep(1)
-#         await channel.send(file=file)
-#         await interaction.response.send_message(embed=embed)
-#         await asyncio.sleep(5)
-#         await interaction.channel.delete(reason="Ticket closed by user")
-
-
-
-
-# @bot.slash_command(name="setup_tickets", description="Setup ticket system in the server!")
-# @commands.has_permissions(administrator=True)
-# async def setup_tickets(ctx:discord.Interaction):
-#   existif = discord.utils.get(ctx.guild.categories, name=configs.TRANCS)
-#   gild = ctx.guild
-#   m = await gild.create_category(configs.TRANCS)
-#   c = await gild.create_text_channel("Support | Open tickets", category=m)
-#   await c.set_permissions(gild.default_role, send_messages=False)
-#   x = await gild.create_text_channel("Results | Transcripts", category=m)
-#   await x.set_permissions(gild.default_role, view_channel=False)
-
-
-#   conf_embed = Embed(title='Success', description=f'Ticket channels and categories set up successfully!!')
-#   await ctx.response.send_message(embed=conf_embed)
 
 
 @bot.slash_command(name="user_xp_reset", description = "Resets a defined users xp")
