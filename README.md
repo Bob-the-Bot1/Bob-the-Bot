@@ -3,10 +3,10 @@
 
 ## Developers
 
-- [ExplodeC0de](https://github.com/ExplodeC0de) - Developer/Bot owner/YouTube Manager
+- [ExplodeC0de](https://github.com/ExplodeC0de) - Developer/Bot owner/Social Manager
 - [csdaniel](https://github.com/csd4ni3l) - Developer/Hosting Manager
 - [Coder DO as Impossible](https://github.com/SNV-008) - Lead Developer 
-- [Cattopy The Web](https://github.com/MesVisiDraugai) - Developer/YouTube Manager 
+- [Cattopy The Web](https://github.com/MesVisiDraugai) - Developer/Social Manager 
 - [OpenSourceSimon](https://github.com/OpenSourceSimon) - Developer
 - [lukemccrea](https://github.com/lukemccrea) - Developer
 
