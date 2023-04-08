@@ -862,6 +862,46 @@ async def hello(interaction:discord.Interaction):
     username = interaction.user.name
     await interaction.response.send_message(f"{random.choice(greetings)} {username}!")
 
+#animal picture commands
+
+@client.slash_command(name="cat", description="Get a random cat picture")
+async def hello(interaction:discord.Interaction):
+    username = interaction.user.name
+    await interaction.response.send_message(f"Meow {username}! https://cataas.com/cat")
+
+@client.slash_command(name="dog", description="Get a random dog picture")
+async def hello(interaction:discord.Interaction):
+    username = interaction.user.name
+    response = requests.get('https://dog.ceo/api/breeds/image/random')
+    if response.status_code == 200:
+        data = response.json()
+        await interaction.response.send_message(f"Woof {username}!")
+        await interaction.response.send_message(data["message"])
+    else:
+        await interaction.response.send_message("Error: failed to fetch dog image")
+
+@client.slash_command(name="fox", description="Get a random fox picture")
+async def hello(interaction:discord.Interaction):
+    username = interaction.user.name
+    response = requests.get('https://some-random-api.ml/animal/fox')
+    if response.status_code == 200:
+        data = response.json()
+        await interaction.response.send_message(f"Howl {username}!")
+        await interaction.response.send_message(data["image"])
+    else:
+        await interaction.response.send_message("Error: failed to fetch fox image")
+
+@client.slash_command(name="bird", description="Get a random bird picture")
+async def hello(interaction:discord.Interaction):
+    username = interaction.user.name
+    response = requests.get('https://some-random-api.ml/animal/bird')
+    if response.status_code == 200:
+        data = response.json()
+        await interaction.response.send_message(f"Tweet {username}!")
+        await interaction.response.send_message(data["image"])
+    else:
+        await interaction.response.send_message("Error: failed to fetch bird image")
+
 
 
 
