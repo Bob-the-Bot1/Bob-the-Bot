@@ -59,7 +59,7 @@ def get_one_role(guild_id:int, level:int):
     for data in row:
         level_getting, role_id = data
         if level_getting == level:
-            return row[0]
+            return data[0]
         else:
             return None
 
